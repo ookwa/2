@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#08080b">
@@ -510,7 +512,84 @@ button:disabled{opacity:.45;cursor:not-allowed!important}
 <div class="background" aria-hidden="true">
   <div class="grid"></div><div class="orb one"></div><div class="orb two"></div><div class="orb three"></div>
 </div>
+
 <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<!-- Login screen: shown until Supabase confirms a session -->
+<section class="auth-screen" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-logo">
+        <i class="fa-solid fa-circle-nodes"></i>
+      </div>
+      <div>
+        <div class="auth-brand-name">ookwa <span class="version">1.0</span></div>
+        <div class="auth-brand-subtitle">Your ideas, brought to life.</div>
+      </div>
+    </div>
+
+    <h1 id="auth-title">Welcome back.</h1>
+    <p class="auth-description" id="auth-description">
+      Log in to your account to start chatting with Ookwa.
+    </p>
+
+    <form id="auth-form">
+      <label class="auth-field" id="username-field" hidden>
+        <span>Username</span>
+        <input
+          id="auth-username"
+          type="text"
+          autocomplete="username"
+          minlength="3"
+          maxlength="24"
+          placeholder="Choose a username"
+        >
+      </label>
+
+      <label class="auth-field">
+        <span>Email address</span>
+        <input
+          id="auth-email"
+          type="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+        >
+      </label>
+
+      <label class="auth-field">
+        <span>Password</span>
+        <input
+          id="auth-password"
+          type="password"
+          autocomplete="current-password"
+          minlength="8"
+          placeholder="At least 8 characters"
+          required
+        >
+      </label>
+
+      <button class="auth-submit" id="auth-submit" type="submit">
+        Log in
+      </button>
+    </form>
+
+    <div class="auth-message" id="auth-message" role="status" aria-live="polite"></div>
+
+    <div class="auth-switch">
+      <span id="auth-switch-text">Don't have an account?</span>
+      <button type="button" id="auth-switch-button">Sign up</button>
+    </div>
+
+    <div class="auth-privacy">
+      <i class="fa-solid fa-shield-halved"></i>
+      Your account is managed securely through Supabase.
+    </div>
+  </div>
+</section>
+
+<div id="app">
+>
 
 <div id="app">
   <header class="topbar">
@@ -1174,6 +1253,503 @@ updateAverage();
     counter.title = 'Visitor count unavailable. Check the counter service.';
     console.warn('Ookwa visitor counter:', error);
   }
+})();
+
+/* AUTHENTICATION SCREEN */
+body #app {
+  display: none;
+}
+
+body.authenticated #app {
+  display: flex;
+}
+
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 0%, #70151e45, transparent 60%),
+    #08080b;
+}
+
+body.authenticated .auth-screen {
+  display: none;
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  padding: 32px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 22px;
+  background: rgba(17,17,22,.94);
+  box-shadow: 0 25px 90px #0009, 0 0 55px #ef44440b;
+  animation: appear .35s ease both;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.auth-logo {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(145deg,#ff6973,#a20f29);
+  box-shadow: 0 5px 24px #ef444433;
+  font-size: 20px;
+}
+
+.auth-brand-name {
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.auth-brand-subtitle {
+  margin-top: 4px;
+  color: #92929f;
+  font-size: .7rem;
+}
+
+.auth-card h1 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.auth-description {
+  margin: 9px 0 24px;
+  color: #9999a5;
+  font-size: .82rem;
+  line-height: 1.7;
+}
+
+.auth-field {
+  display: block;
+  margin: 16px 0;
+}
+
+.auth-field span {
+  display: block;
+  margin-bottom: 8px;
+  color: #d8d8e1;
+  font-size: .74rem;
+  font-weight: 700;
+}
+
+.auth-field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 13px;
+  border: 1px solid #ffffff15;
+  border-radius: 11px;
+  outline: none;
+  background: #0c0c10;
+  color: white;
+  font-size: .82rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.auth-field input:focus {
+  border-color: #f87171a0;
+  box-shadow: 0 0 0 3px #ef444412;
+}
+
+.auth-submit {
+  width: 100%;
+  min-height: 47px;
+  margin-top: 9px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(110deg,#ff6973,#c21d36);
+  color: white;
+  font-size: .82rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 22px #ef444422;
+  transition: filter .2s, transform .2s;
+}
+
+.auth-submit:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.auth-submit:disabled {
+  cursor: wait;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  text-align: center;
+  color: #9999a5;
+  font-size: .76rem;
+}
+
+.auth-switch button {
+  border: 0;
+  background: none;
+  color: #ff8290;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.auth-switch button:hover {
+  color: #ffc0c6;
+}
+
+.auth-message {
+  display: none;
+  margin-top: 15px;
+  padding: 11px 12px;
+  border: 1px solid #f8717130;
+  border-radius: 10px;
+  background: #ef44440d;
+  color: #ffb4ba;
+  font-size: .75rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.auth-message.visible {
+  display: block;
+}
+
+.auth-message.success {
+  border-color: #4ade8030;
+  background: #4ade800c;
+  color: #86efac;
+}
+
+.auth-privacy {
+  margin-top: 22px;
+  color: #777783;
+  font-size: .65rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.auth-privacy i {
+  margin-right: 5px;
+  color: #86efac;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid #f8717130;
+  border-radius: 10px;
+  background: #ef444410;
+  color: #ffb4ba;
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #ef444422;
+  border-color: #f8717166;
+}
+
+.account-email {
+  max-width: 180px;
+  overflow: hidden;
+  color: #b9b9c4;
+  font-size: .7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media(max-width:480px) {
+  .auth-screen {
+    padding: 15px;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.5rem;
+  }
+}
+})();
+</script>
+
+<script>
+(() => {
+  // Replace these with your own Supabase project details.
+  const SUPABASE_URL = 'https://supabase.com/dashboard/project/qyvddqdsxnwzmzkouhow';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_pDC0s4CDOxcc7J-jX4JD3w_DKCBM4OB';
+
+  const authForm = document.getElementById('auth-form');
+  const authTitle = document.getElementById('auth-title');
+  const authDescription = document.getElementById('auth-description');
+  const authSubmit = document.getElementById('auth-submit');
+  const authMessage = document.getElementById('auth-message');
+  const switchButton = document.getElementById('auth-switch-button');
+  const switchText = document.getElementById('auth-switch-text');
+  const usernameField = document.getElementById('username-field');
+  const usernameInput = document.getElementById('auth-username');
+  const emailInput = document.getElementById('auth-email');
+  const passwordInput = document.getElementById('auth-password');
+
+  let mode = 'login';
+  let supabaseClient = null;
+  let signingOut = false;
+
+  function showMessage(message, success = false) {
+    authMessage.textContent = message;
+    authMessage.classList.add('visible');
+    authMessage.classList.toggle('success', success);
+  }
+
+  function clearMessage() {
+    authMessage.textContent = '';
+    authMessage.classList.remove('visible', 'success');
+  }
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    clearMessage();
+
+    const isSignup = mode === 'signup';
+
+    authTitle.textContent = isSignup ? 'Create your account.' : 'Welcome back.';
+    authDescription.textContent = isSignup
+      ? 'Create an account to start using Ookwa.'
+      : 'Log in to your account to start chatting with Ookwa.';
+
+    authSubmit.textContent = isSignup ? 'Create account' : 'Log in';
+    switchText.textContent = isSignup
+      ? 'Already have an account?'
+      : "Don't have an account?";
+    switchButton.textContent = isSignup ? 'Log in' : 'Sign up';
+
+    usernameField.hidden = !isSignup;
+    usernameInput.required = isSignup;
+    usernameInput.autocomplete = isSignup ? 'username' : 'off';
+    passwordInput.autocomplete = isSignup ? 'new-password' : 'current-password';
+  }
+
+  function showAuthenticatedUI(user) {
+    document.body.classList.add('authenticated');
+
+    // Add an account label and logout button to the existing top bar.
+    const actions = document.querySelector('.top-actions');
+    if (!actions || document.getElementById('ookwa-logout')) return;
+
+    const emailLabel = document.createElement('span');
+    emailLabel.className = 'account-email';
+    emailLabel.id = 'ookwa-account-email';
+    emailLabel.textContent = user.email || 'Logged in';
+
+    const logoutButton = document.createElement('button');
+    logoutButton.className = 'logout-btn';
+    logoutButton.id = 'ookwa-logout';
+    logoutButton.type = 'button';
+    logoutButton.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Log out';
+
+    logoutButton.addEventListener('click', async () => {
+      if (signingOut) return;
+      signingOut = true;
+      logoutButton.disabled = true;
+
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+
+        document.body.classList.remove('authenticated');
+        logoutButton.remove();
+        emailLabel.remove();
+        clearMessage();
+        authForm.reset();
+        setMode('login');
+
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        showMessage('You have been logged out.', true);
+      } catch (error) {
+        console.error('Logout error:', error);
+        if (typeof toast === 'function') toast('Could not log out. Please try again.');
+        logoutButton.disabled = false;
+      } finally {
+        signingOut = false;
+      }
+    });
+
+    actions.append(emailLabel, logoutButton);
+  }
+
+  function showLoggedOutUI() {
+    document.body.classList.remove('authenticated');
+    document.getElementById('ookwa-logout')?.remove();
+    document.getElementById('ookwa-account-email')?.remove();
+  }
+
+  async function initializeAuth() {
+    if (
+      SUPABASE_URL === 'https://supabase.com/dashboard/project/qyvddqdsxnwzmzkouhow' ||
+      SUPABASE_PUBLISHABLE_KEY === 'sb_publishable_pDC0s4CDOxcc7J-jX4JD3w_DKCBM4OB'
+    ) {
+      showMessage('Setup needed: add your Supabase project URL and publishable key in the authentication script.');
+      authSubmit.disabled = true;
+      return;
+    }
+
+    if (!window.supabase?.createClient) {
+      showMessage('The authentication service could not load. Check your internet connection and reload.');
+      return;
+    }
+
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    // Check the existing session before showing the application.
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      showMessage('Could not verify your login. Please reload the page.');
+      console.error('Session error:', error);
+      return;
+    }
+
+    if (data.session?.user) {
+      showAuthenticatedUI(data.session.user);
+    } else {
+      showLoggedOutUI();
+    }
+
+    // React to logins, logouts, and session changes.
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        showAuthenticatedUI(session.user);
+      } else {
+        showLoggedOutUI();
+      }
+    });
+
+    authForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      clearMessage();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage('Enter your email address and password.');
+        return;
+      }
+
+      if (mode === 'signup') {
+        const username = usernameInput.value.trim();
+
+        if (username.length < 3) {
+          showMessage('Your username must be at least 3 characters.');
+          return;
+        }
+
+        if (!/^[a-zA-Z0-9_.-]+$/.test(username)) {
+          showMessage('Use only letters, numbers, dots, underscores, and hyphens in your username.');
+          return;
+        }
+      }
+
+      authSubmit.disabled = true;
+      authSubmit.textContent = mode === 'signup' ? 'Creating account...' : 'Logging in...';
+
+      try {
+        if (mode === 'signup') {
+          const username = usernameInput.value.trim();
+
+          const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { username }
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session?.user) {
+            showAuthenticatedUI(data.session.user);
+            authForm.reset();
+            showMessage('Your account has been created.', true);
+          } else {
+            showMessage(
+              'Account created! Check your email for a confirmation link, then return here to log in.',
+              true
+            );
+            setMode('login');
+            emailInput.value = email;
+          }
+        } else {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) throw error;
+
+          if (data.session?.user) {
+            showAuthenticatedUI(data.session.user);
+            authForm.reset();
+          }
+        }
+      } catch (error) {
+        console.error('Authentication error:', error);
+
+        const message = String(error.message || '').toLowerCase();
+        if (message.includes('invalid login credentials')) {
+          showMessage('Email or password is incorrect.');
+        } else if (message.includes('already registered')) {
+          showMessage('An account with this email already exists. Try logging in.');
+        } else if (message.includes('password')) {
+          showMessage(error.message || 'Please check your password.');
+        } else {
+          showMessage(error.message || 'Authentication failed. Please try again.');
+        }
+      } finally {
+        authSubmit.disabled = false;
+        authSubmit.textContent = mode === 'signup' ? 'Create account' : 'Log in';
+      }
+    });
+
+    switchButton.addEventListener('click', () => {
+      setMode(mode === 'login' ? 'signup' : 'login');
+    });
+  }
+
+  setMode('login');
+
+  // Keep the application hidden unless authentication is configured and verified.
+  initializeAuth().catch(error => {
+    console.error('Authentication initialization error:', error);
+    showLoggedOutUI();
+    showMessage('Could not initialize login. Check your Supabase settings and reload.');
+  });
 })();
 </script>
 </body>
