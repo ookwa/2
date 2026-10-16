@@ -1,38 +1,65 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ookwa 1.0</title>
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="Meet Ookwa, your personal AI assistant.">
+  <title>Ookwa 1.0 — AI Assistant</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0a0a0b;
-      --surface: #111113;
-      --surface-2: #18181b;
-      --border: #27272a;
-      --border-hover: #3f3f46;
+      --bg: #09090b;
+      --surface: rgba(18, 18, 22, .82);
+      --surface-2: rgba(27, 27, 33, .88);
+      --surface-3: #222228;
+      --border: rgba(255,255,255,.075);
+      --border-hover: rgba(248,113,113,.45);
       --text: #fafafa;
-      --muted: #a1a1aa;
+      --muted: #9696a3;
       --accent: #ef4444;
-      --cyan: #f87171;
+      --accent-2: #fb7185;
       --green: #4ade80;
-      --radius: 12px;
+      --radius: 16px;
+      --shadow: 0 20px 70px rgba(0,0,0,.28);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html { color-scheme: dark; }
+
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: Inter, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
     }
+
+    button, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    button:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 2px solid var(--accent-2);
+      outline-offset: 3px;
+    }
+
+    ::selection { background: rgba(239,68,68,.35); color: white; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: #34343d;
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #555560; }
 
     .bg-motion {
       position: fixed;
@@ -40,154 +67,177 @@
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
-      background: #0a0a0b;
-    }
-
-    .bg-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.45;
-      animation: orbFloat 18s ease-in-out infinite;
-    }
-
-    .bg-orb.o1 {
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(239,68,68,.45), transparent 70%);
-      top: -10%;
-      left: 10%;
-    }
-
-    .bg-orb.o2 {
-      width: 360px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(185,28,28,.35), transparent 70%);
-      bottom: -5%;
-      right: 5%;
-      animation-delay: -6s;
-      animation-duration: 22s;
-    }
-
-    .bg-orb.o3 {
-      width: 280px;
-      height: 280px;
-      background: radial-gradient(circle, rgba(248,113,113,.25), transparent 70%);
-      top: 40%;
-      left: 45%;
-      animation-delay: -12s;
-      animation-duration: 16s;
-    }
-
-    @keyframes orbFloat {
-      0%,100% { transform: translate(0,0) scale(1); }
-      25% { transform: translate(40px,-30px) scale(1.08); }
-      50% { transform: translate(-25px,35px) scale(.95); }
-      75% { transform: translate(30px,15px) scale(1.04); }
+      background:
+        radial-gradient(ellipse at 50% -25%, rgba(127,29,29,.16), transparent 55%),
+        #09090b;
     }
 
     .bg-grid {
       position: absolute;
       inset: -50%;
       background-image:
-        linear-gradient(rgba(239,68,68,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(239,68,68,.04) 1px, transparent 1px);
+        linear-gradient(rgba(248,113,113,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248,113,113,.025) 1px, transparent 1px);
       background-size: 48px 48px;
-      animation: gridDrift 40s linear infinite;
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
+      animation: gridDrift 55s linear infinite;
+      mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .35;
+      animation: orbFloat 22s ease-in-out infinite;
+    }
+
+    .bg-orb.o1 {
+      width: 400px;
+      height: 400px;
+      background: #991b1b;
+      top: -230px;
+      left: 10%;
+    }
+
+    .bg-orb.o2 {
+      width: 340px;
+      height: 340px;
+      background: #7f1d1d;
+      bottom: -220px;
+      right: 5%;
+      animation-delay: -8s;
+    }
+
+    .bg-orb.o3 {
+      width: 260px;
+      height: 260px;
+      background: #be123c;
+      top: 40%;
+      left: 40%;
+      opacity: .13;
+      animation-delay: -12s;
+    }
+
+    @keyframes orbFloat {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(35px,-25px) scale(1.08); }
     }
 
     @keyframes gridDrift {
-      from { transform: translate(0,0); }
       to { transform: translate(48px,48px); }
     }
 
     #particle-canvas {
       position: fixed;
       inset: 0;
-      width: 100vw;
-      height: 100vh;
-      display: block;
+      width: 100%;
+      height: 100%;
       z-index: 1;
       pointer-events: none;
+      opacity: .55;
     }
 
     #app {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
       position: relative;
       z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .topbar, .sidebar-left, .sidebar-right, .chat-input-area {
-      background: rgba(17,17,19,.85);
-      backdrop-filter: blur(8px);
+      background: rgba(13,13,16,.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
     }
 
     .topbar {
-      height: 52px;
+      height: 68px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1rem;
+      padding: 0 25px;
       border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
     }
 
     .topbar-brand {
       display: flex;
       align-items: center;
-      gap: .55rem;
+      gap: 12px;
     }
 
     .topbar-logo-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: linear-gradient(145deg,#ef4444,#991b1b);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 12px rgba(239,68,68,.35);
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(145deg,#fb5252,#a31225);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 22px rgba(239,68,68,.23), inset 0 1px rgba(255,255,255,.22);
     }
 
-    .topbar-logo-mark svg { width: 16px; height: 16px; }
+    .topbar-logo-mark svg { width: 21px; height: 21px; }
 
     .topbar-logo {
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -.65px;
     }
 
     .topbar-logo span {
-      color: var(--accent);
-      font-size: .75rem;
-      margin-left: .3rem;
+      font-size: .67rem;
+      font-weight: 600;
+      letter-spacing: .1px;
+      color: #fca5a5;
+      background: rgba(239,68,68,.11);
+      border: 1px solid rgba(239,68,68,.18);
+      border-radius: 6px;
+      padding: 4px 6px;
+      margin-left: 5px;
+      vertical-align: 2px;
     }
 
     .topbar-right {
-      font-size: .8rem;
-      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .78rem;
+      color: #b4b4be;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px rgba(74,222,128,.5);
     }
 
     .main {
       flex: 1;
       display: grid;
-      grid-template-columns: 180px 1fr 200px;
+      grid-template-columns: 225px minmax(0,1fr) 235px;
       overflow: hidden;
       min-height: 0;
+      margin: 15px;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      box-shadow: var(--shadow);
+      background: rgba(12,12,15,.3);
     }
 
     .sidebar-left, .sidebar-right {
-      padding: .85rem;
+      padding: 19px 15px;
       overflow-y: auto;
+      min-width: 0;
     }
 
     .sidebar-left {
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: .85rem;
+      gap: 22px;
     }
 
     .sidebar-right {
@@ -197,49 +247,56 @@
     }
 
     .sidebar-title {
-      font-size: .65rem;
-      font-weight: 600;
-      letter-spacing: .08em;
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: 1.25px;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: .35rem;
+      color: #858591;
+      margin-bottom: 11px;
     }
 
     .rating-box, .contact-card {
-      background: var(--surface-2);
+      background: linear-gradient(145deg,rgba(30,30,36,.92),rgba(19,19,23,.92));
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: .8rem;
+      border-radius: 14px;
+      padding: 15px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .rating-box:hover, .contact-card:hover {
+      border-color: rgba(255,255,255,.12);
     }
 
     .rating-box h3 {
-      font-size: .8rem;
-      margin-bottom: .2rem;
+      font-size: .85rem;
+      margin-bottom: 5px;
+      letter-spacing: -.2px;
     }
 
     .rating-box p {
-      font-size: .7rem;
+      font-size: .74rem;
       color: var(--muted);
-      margin-bottom: .65rem;
+      margin-bottom: 13px;
+      line-height: 1.5;
     }
 
     .stars {
       display: flex;
-      gap: .15rem;
-      margin-bottom: .5rem;
+      gap: 4px;
+      margin-bottom: 10px;
     }
 
     .star {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       cursor: pointer;
-      color: #3f3f46;
-      transition: .15s;
+      color: #41414b;
+      transition: color .15s, transform .15s;
       user-select: none;
     }
 
     .star:hover, .star.active {
       color: #fbbf24;
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
     .rating-feedback {
@@ -249,132 +306,258 @@
     }
 
     .rating-avg {
-      margin-top: .4rem;
-      font-size: .7rem;
+      margin-top: 8px;
+      font-size: .67rem;
       color: var(--muted);
+      line-height: 1.5;
     }
 
     .rating-avg strong { color: #fbbf24; }
 
-    .contact-card {
-      margin-top: auto;
-    }
-
-    .contact-card h3 {
-      font-size: .75rem;
-      margin-bottom: .55rem;
-    }
+    .contact-card { margin-top: auto; }
+    .contact-card h3 { font-size: .8rem; margin-bottom: 15px; }
 
     .contact-item {
       display: flex;
       flex-direction: column;
-      gap: .05rem;
-      margin-bottom: .55rem;
-      font-size: .7rem;
+      gap: 5px;
+      margin-bottom: 14px;
+      font-size: .73rem;
     }
 
     .contact-item:last-child { margin-bottom: 0; }
+    .contact-item label { color: #82828e; font-size: .67rem; }
 
-    .contact-item label {
-      color: var(--muted);
-      font-size: .6rem;
-    }
-
-    .contact-item a {
-      color: var(--cyan);
+    .contact-item a, .contact-item span {
+      color: #e5e5eb;
       text-decoration: none;
-      word-break: break-all;
+      overflow-wrap: anywhere;
     }
 
-    .contact-item a:hover { text-decoration: underline; }
+    .contact-item a:hover { color: #fca5a5; }
 
     .chat-area {
       display: flex;
       flex-direction: column;
       overflow: hidden;
       min-width: 0;
+      position: relative;
+    }
+
+    .chat-heading {
+      min-height: 61px;
+      padding: 13px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.045);
+    }
+
+    .chat-heading h1 {
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: -.2px;
+    }
+
+    .chat-heading p {
+      color: var(--muted);
+      font-size: .7rem;
+      margin-top: 4px;
+    }
+
+    .heading-pill {
+      border: 1px solid rgba(74,222,128,.15);
+      background: rgba(74,222,128,.055);
+      color: #86efac;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: .66rem;
+      white-space: nowrap;
     }
 
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 1.15rem 1.35rem;
+      padding: 24px clamp(14px,3vw,34px);
       display: flex;
       flex-direction: column;
-      gap: .75rem;
+      gap: 18px;
+      scroll-behavior: smooth;
     }
 
     .msg {
-      max-width: 85%;
-      padding: .7rem .95rem;
-      border-radius: 14px;
-      font-size: .9rem;
-      line-height: 1.55;
+      max-width: min(86%,680px);
+      padding: 13px 16px;
+      border-radius: 15px;
+      font-size: .875rem;
+      line-height: 1.75;
       overflow-wrap: anywhere;
-      animation: fadeIn .2s ease;
+      animation: fadeIn .24s ease both;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .msg.user {
       align-self: flex-end;
-      background: var(--accent);
       color: white;
-      border-bottom-right-radius: 4px;
+      background: linear-gradient(135deg,#dc353f,#a91e30);
+      border: 1px solid rgba(255,140,140,.15);
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 5px 20px rgba(180,30,45,.12);
     }
 
     .msg.ai {
       align-self: flex-start;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 4px;
+      background: linear-gradient(145deg,rgba(29,29,35,.96),rgba(21,21,26,.96));
+      border: 1px solid rgba(255,255,255,.075);
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 5px 22px rgba(0,0,0,.12);
     }
 
     .msg.ai .ai-label {
-      font-size: .65rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      color: var(--accent);
-      margin-bottom: .25rem;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .7px;
+      color: #fca5a5;
+      margin-bottom: 7px;
     }
+
+    .ai-label::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(239,68,68,.6);
+    }
+
+    .msg.ai .ai-body { color: #e8e8ee; }
 
     .msg.system {
       align-self: center;
-      color: var(--muted);
-      font-size: .8rem;
-      max-width: 90%;
+      color: #858591;
+      font-size: .72rem;
+      max-width: 95%;
       text-align: center;
+      padding: 5px 10px;
+    }
+
+    .welcome {
+      margin: auto;
+      width: min(100%,480px);
+      padding: 30px 12px;
+      text-align: center;
+      animation: fadeIn .5s ease both;
+    }
+
+    .welcome-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(145deg,rgba(239,68,68,.2),rgba(127,29,29,.12));
+      border: 1px solid rgba(248,113,113,.2);
+      box-shadow: 0 0 45px rgba(239,68,68,.08);
+    }
+
+    .welcome-icon svg { width: 28px; height: 28px; }
+
+    .welcome h2 {
+      font-size: clamp(1.5rem,3vw,2.05rem);
+      letter-spacing: -1.2px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .welcome h2 span {
+      background: linear-gradient(100deg,#fca5a5,#ef4444,#fb7185);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .welcome > p {
+      max-width: 340px;
+      margin: 12px auto 25px;
+      color: #9898a4;
+      font-size: .83rem;
+      line-height: 1.75;
+    }
+
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 9px;
+      text-align: left;
+    }
+
+    .suggestion {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      color: #dedee6;
+      cursor: pointer;
+      text-align: left;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+
+    .suggestion:hover {
+      background: rgba(239,68,68,.065);
+      border-color: rgba(239,68,68,.32);
+      transform: translateY(-2px);
+    }
+
+    .suggestion strong {
+      display: block;
+      font-size: .76rem;
+      margin-bottom: 5px;
+    }
+
+    .suggestion span {
+      display: block;
+      font-size: .67rem;
+      color: #92929e;
+      line-height: 1.5;
     }
 
     .typing {
       align-self: flex-start;
-      padding: .7rem .95rem;
+      padding: 12px 15px;
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 13px;
       display: none;
-      margin: 0 1.35rem .35rem;
+      margin: 0 25px 12px;
       align-items: center;
-      gap: .55rem;
+      gap: 11px;
     }
 
     .typing.visible { display: flex; }
 
     .typing-label {
-      font-size: .65rem;
-      font-weight: 600;
-      color: var(--accent);
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: #fca5a5;
     }
 
     .typing-dots { display: flex; gap: 4px; }
 
     .typing-dots span {
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
+      width: 5px;
+      height: 5px;
+      background: var(--accent-2);
       border-radius: 50%;
       animation: bounce 1.2s infinite;
     }
@@ -387,132 +570,226 @@
       30% { transform: translateY(-4px); opacity: 1; }
     }
 
-    .chat-input-area {
-      padding: .75rem 1.15rem 1rem;
+    .input-shell {
+      padding: 12px clamp(12px,2.5vw,28px) 16px;
       border-top: 1px solid var(--border);
+      background: linear-gradient(180deg,rgba(13,13,16,.65),rgba(13,13,16,.94));
+    }
+
+    .chat-input-area {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 7px;
       display: flex;
-      gap: .55rem;
       align-items: flex-end;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      background: rgba(25,25,30,.92);
+      box-shadow: 0 8px 30px rgba(0,0,0,.16);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .chat-input-area:focus-within {
+      border-color: rgba(239,68,68,.55);
+      box-shadow: 0 0 0 3px rgba(239,68,68,.055),0 8px 30px rgba(0,0,0,.16);
     }
 
     .chat-input-area textarea {
       flex: 1;
       min-width: 0;
-      padding: .65rem .95rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
+      padding: 10px 11px;
+      border: 0;
+      background: transparent;
       color: var(--text);
-      font-size: .9rem;
-      font-family: inherit;
+      font-size: .87rem;
       resize: none;
       outline: none;
-      max-height: 120px;
-      min-height: 40px;
-      line-height: 1.4;
+      max-height: 150px;
+      min-height: 42px;
+      line-height: 1.55;
     }
 
-    .chat-input-area textarea:focus { border-color: var(--accent); }
-    .chat-input-area textarea::placeholder { color: var(--muted); }
+    .chat-input-area textarea:focus-visible { outline: none; }
+    .chat-input-area textarea::placeholder { color: #777783; }
 
     .tts-btn, .attract-btn, .send-btn {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       cursor: pointer;
-      transition: .15s;
+      transition: transform .18s, background .18s, border-color .18s, color .18s;
     }
 
     .tts-btn, .attract-btn {
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--muted);
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a1a1ac;
+      font-size: 1rem;
+    }
+
+    .tts-btn:hover, .attract-btn:hover {
+      background: rgba(255,255,255,.06);
+      color: white;
     }
 
     .tts-btn.on, .attract-btn.on {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(239,68,68,.12);
+      border-color: rgba(239,68,68,.24);
+      color: #fca5a5;
+      background: rgba(239,68,68,.1);
     }
 
     .send-btn {
-      border: none;
-      background: var(--accent);
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(145deg,#f05252,#c52638);
       color: white;
       font-size: 1.05rem;
+      box-shadow: 0 3px 12px rgba(239,68,68,.18);
     }
 
-    .send-btn:hover { filter: brightness(1.1); }
-    .send-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .send-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+    .send-btn:active { transform: scale(.96); }
+    .send-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    .input-hint {
+      text-align: center;
+      color: #777783;
+      font-size: .65rem;
+      margin-top: 10px;
+    }
 
     .history-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: .65rem;
+      gap: 6px;
+      margin-bottom: 13px;
     }
+
+    .history-header .sidebar-title { margin-bottom: 0; }
 
     .clear-history {
-      font-size: .7rem;
-      color: var(--muted);
+      font-size: .68rem;
+      color: #9696a3;
       background: none;
-      border: none;
+      border: 0;
+      border-radius: 6px;
+      padding: 5px 7px;
       cursor: pointer;
+      transition: color .2s, background .2s;
     }
 
-    .clear-history:hover { color: #f87171; }
+    .clear-history:hover { color: #fca5a5; background: rgba(239,68,68,.08); }
 
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: .35rem;
-      flex: 1;
-    }
+    .history-list { display: flex; flex-direction: column; gap: 7px; }
 
     .history-item {
-      padding: .55rem .65rem;
-      background: var(--surface-2);
+      padding: 11px;
+      background: rgba(255,255,255,.025);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 11px;
       cursor: pointer;
-      font-size: .75rem;
+      font-size: .73rem;
+      transition: border-color .2s, background .2s;
     }
 
-    .history-item:hover { border-color: var(--border-hover); }
+    .history-item:hover {
+      border-color: var(--border-hover);
+      background: rgba(239,68,68,.045);
+    }
 
     .history-item .q {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: .1rem;
+      margin-bottom: 6px;
+      color: #e1e1e8;
     }
 
-    .history-item .time {
-      font-size: .6rem;
-      color: var(--muted);
-    }
+    .history-item .time { font-size: .62rem; color: #858591; }
 
     .history-empty {
-      color: var(--muted);
+      color: #858591;
       font-size: .75rem;
       text-align: center;
-      margin-top: 1.25rem;
+      margin-top: 25px;
+      line-height: 1.7;
     }
 
-    @media (max-width: 900px) {
-      .main { grid-template-columns: 1fr; }
-      .sidebar-left, .sidebar-right { display: none; }
+    .side-note {
+      margin-top: auto;
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      border-radius: 12px;
+      font-size: .7rem;
+      color: #9999a5;
+      line-height: 1.65;
     }
 
-    @media (max-width: 480px) {
-      .chat-messages { padding: .8rem; }
-      .chat-input-area { padding: .6rem; gap: .35rem; }
-      .msg { max-width: 92%; }
-      .tts-btn, .attract-btn, .send-btn { width: 36px; height: 40px; }
+    .side-note strong {
+      display: block;
+      color: #e5e5eb;
+      font-size: .73rem;
+      margin-bottom: 4px;
+    }
+
+    @media (min-width: 1500px) {
+      .main { grid-template-columns: 245px minmax(0,1fr) 255px; }
+      .chat-messages { padding-left: 45px; padding-right: 45px; }
+    }
+
+    @media (max-width: 1000px) {
+      .main { grid-template-columns: 190px minmax(0,1fr); }
+      .sidebar-right { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      .topbar { height: 59px; padding: 0 15px; }
+      .topbar-logo-mark { width: 34px; height: 34px; }
+      .topbar-right { font-size: .7rem; }
+      .main {
+        display: flex;
+        flex-direction: column;
+        margin: 8px;
+        border-radius: 15px;
+      }
+      .sidebar-left { display: none; }
+      .chat-heading { min-height: 53px; padding: 10px 15px; }
+      .chat-messages { padding: 18px 12px; gap: 14px; }
+      .msg { max-width: 94%; font-size: .84rem; padding: 11px 13px; }
+      .typing { margin-left: 13px; }
+      .welcome { padding: 20px 4px; }
+      .welcome-icon { width: 52px; height: 52px; border-radius: 17px; }
+      .welcome > p { font-size: .78rem; }
+      .suggestion { padding: 10px; }
+      .suggestion strong { font-size: .72rem; }
+      .suggestion span { font-size: .64rem; }
+      .input-shell { padding: 9px 9px 12px; }
+      .chat-input-area { gap: 2px; padding: 5px; }
+      .chat-input-area textarea { font-size: .83rem; padding: 10px 7px; }
+      .tts-btn, .attract-btn, .send-btn { width: 36px; height: 39px; border-radius: 10px; }
+      .input-hint { font-size: .6rem; margin-top: 8px; }
+    }
+
+    @media (max-width: 380px) {
+      .topbar-right { font-size: .65rem; gap: 5px; }
+      .heading-pill { display: none; }
+      .suggestions { grid-template-columns: 1fr; }
+      .suggestion span { font-size: .68rem; }
+      .tts-btn, .attract-btn, .send-btn { width: 32px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
@@ -525,10 +802,10 @@
     <div class="bg-orb o3"></div>
   </div>
 
-  <canvas id="particle-canvas"></canvas>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
   <div id="app">
-    <div class="topbar">
+    <header class="topbar">
       <div class="topbar-brand">
         <div class="topbar-logo-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -539,30 +816,33 @@
         </div>
         <div class="topbar-logo">Ookwa <span>1.0</span></div>
       </div>
-      <div class="topbar-right">AI assistant</div>
-    </div>
+      <div class="topbar-right">
+        <span class="status-dot"></span>
+        <span>Personal AI assistant</span>
+      </div>
+    </header>
 
-    <div class="main">
+    <main class="main">
       <aside class="sidebar-left">
-        <div>
-          <div class="sidebar-title">Rate</div>
+        <section>
+          <div class="sidebar-title">Your feedback</div>
           <div class="rating-box">
-            <h3>How good?</h3>
-            <p>Tap a star</p>
-            <div class="stars" id="stars">
-              <span class="star" data-val="1">★</span>
-              <span class="star" data-val="2">★</span>
-              <span class="star" data-val="3">★</span>
-              <span class="star" data-val="4">★</span>
-              <span class="star" data-val="5">★</span>
+            <h3>Enjoying Ookwa?</h3>
+            <p>Your feedback helps us improve the experience.</p>
+            <div class="stars" id="stars" aria-label="Rate Ookwa from one to five stars">
+              <span class="star" data-val="1" role="button" tabindex="0" aria-label="1 star">★</span>
+              <span class="star" data-val="2" role="button" tabindex="0" aria-label="2 stars">★</span>
+              <span class="star" data-val="3" role="button" tabindex="0" aria-label="3 stars">★</span>
+              <span class="star" data-val="4" role="button" tabindex="0" aria-label="4 stars">★</span>
+              <span class="star" data-val="5" role="button" tabindex="0" aria-label="5 stars">★</span>
             </div>
-            <div class="rating-feedback" id="rating-feedback"></div>
+            <div class="rating-feedback" id="rating-feedback" aria-live="polite"></div>
             <div class="rating-avg" id="rating-avg"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="contact-card">
-          <h3>Contact</h3>
+        <section class="contact-card">
+          <h3>Get in touch</h3>
           <div class="contact-item">
             <label>Email</label>
             <a href="mailto:kypton335@gmail.com">kypton335@gmail.com</a>
@@ -572,44 +852,86 @@
             <span>@oowa</span>
           </div>
           <div class="contact-item">
-            <label>Alt</label>
+            <label>Alternative</label>
             <span>@oowa</span>
           </div>
-        </div>
+        </section>
       </aside>
 
-      <div class="chat-area">
-        <div class="chat-messages" id="messages">
-          <div class="msg system">Ookwa 1.0 — ask anything. Turn on 🔊 for voice answers.</div>
+      <section class="chat-area" aria-label="Ookwa chat">
+        <div class="chat-heading">
+          <div>
+            <h1>Chat with Ookwa</h1>
+            <p>Your ideas start here.</p>
+          </div>
+          <div class="heading-pill">● Ready to chat</div>
         </div>
 
-        <div class="typing" id="typing">
-          <span class="typing-label">OOKWA 1.0</span>
+        <div class="chat-messages" id="messages" aria-live="polite">
+          <div class="welcome" id="welcome">
+            <div class="welcome-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fca5a5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/>
+                <path d="M19 14l1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14z"/>
+              </svg>
+            </div>
+            <h2>What can we <span>figure out?</span></h2>
+            <p>Ask a question, explore an idea, get help with code, or work through a problem.</p>
+            <div class="suggestions">
+              <button class="suggestion" data-prompt="Help me build a professional website">
+                <strong>✦ Build something</strong>
+                <span>Website ideas and coding help</span>
+              </button>
+              <button class="suggestion" data-prompt="Give me some creative ideas">
+                <strong>✧ Brainstorm ideas</strong>
+                <span>Find inspiration for a project</span>
+              </button>
+              <button class="suggestion" data-prompt="Explain something in simple terms">
+                <strong>⌘ Learn something</strong>
+                <span>Understand difficult topics</span>
+              </button>
+              <button class="suggestion" data-prompt="Tell me a good joke">
+                <strong>☻ Take a break</strong>
+                <span>Get a joke or something fun</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="typing" id="typing" aria-label="Ookwa is responding">
+          <span class="typing-label">OOKWA</span>
           <div class="typing-dots"><span></span><span></span><span></span></div>
         </div>
 
-        <div class="chat-input-area">
-          <textarea id="user-input" placeholder="Message Ookwa..." rows="1"></textarea>
-          <button class="attract-btn" id="attract-btn" title="Toggle particle attraction">⊕</button>
-          <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇</button>
-          <button class="send-btn" id="send-btn" aria-label="Send message">➤</button>
+        <div class="input-shell">
+          <div class="chat-input-area">
+            <textarea id="user-input" placeholder="Message Ookwa..." rows="1" aria-label="Your message"></textarea>
+            <button class="attract-btn" id="attract-btn" title="Toggle particle attraction" aria-label="Toggle particle attraction">⊕</button>
+            <button class="tts-btn" id="tts-btn" title="Toggle voice answers" aria-label="Toggle voice answers">🔇</button>
+            <button class="send-btn" id="send-btn" aria-label="Send message">➤</button>
+          </div>
+          <p class="input-hint">Enter to send · Shift + Enter for a new line</p>
         </div>
-      </div>
+      </section>
 
       <aside class="sidebar-right">
         <div class="history-header">
-          <div class="sidebar-title">History</div>
+          <div class="sidebar-title">Recent messages</div>
           <button class="clear-history" id="clear-history">Clear</button>
         </div>
         <div class="history-list" id="history-list">
-          <div class="history-empty">Questions appear here</div>
+          <div class="history-empty">Your recent questions will appear here.</div>
+        </div>
+        <div class="side-note">
+          <strong>Made for curiosity.</strong>
+          Explore ideas, ask questions, and keep building something great.
         </div>
       </aside>
-    </div>
+    </main>
   </div>
 
   <script>
-    // ========== PARTICLES ==========
+    // PARTICLES
     window.ookwaAttract = false;
 
     try {
@@ -619,36 +941,58 @@
     (function initParticles() {
       const canvas = document.getElementById('particle-canvas');
       const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
-
-      const mouse = { x: w / 2, y: h / 2 };
+      let w = 0, h = 0;
+      const mouse = { x: -1000, y: -1000 };
       const particles = [];
-      const COUNT = 45;
+      const COUNT = window.innerWidth < 700 ? 24 : 45;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      resize();
 
       for (let i = 0; i < COUNT; i++) {
         particles.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          vx: (Math.random() - .5) * .5,
-          vy: (Math.random() - .5) * .5,
-          r: 2.5 + Math.random() * 3
+          vx: (Math.random() - .5) * .35,
+          vy: (Math.random() - .5) * .35,
+          r: 1 + Math.random() * 1.6
         });
       }
 
-      window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      });
+      window.addEventListener('resize', resize);
 
       document.addEventListener('mousemove', e => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
       });
 
+      document.addEventListener('mouseleave', () => {
+        mouse.x = -1000;
+        mouse.y = -1000;
+      });
+
+      let frame = 0;
+
       function tick() {
+        if (document.hidden) {
+          requestAnimationFrame(tick);
+          return;
+        }
+
         ctx.clearRect(0, 0, w, h);
+        frame++;
 
         for (const p of particles) {
           p.x += p.vx;
@@ -664,48 +1008,41 @@
           const dy = mouse.y - p.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
-          if (dist < 100) {
-            const strength = (window.ookwaAttract ? .025 : -.025) * (1 - dist / 100);
+          if (dist < 110) {
+            const strength = (window.ookwaAttract ? .018 : -.018) * (1 - dist / 110);
             p.vx += dx / dist * strength;
             p.vy += dy / dist * strength;
           }
 
-          p.vx *= .96;
-          p.vy *= .96;
+          p.vx *= .985;
+          p.vy *= .985;
 
-          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-
-          if (speed > 2.2) {
-            p.vx = p.vx / speed * 2.2;
-            p.vy = p.vy / speed * 2.2;
+          const speed = Math.hypot(p.vx, p.vy);
+          if (speed > 1.3) {
+            p.vx = p.vx / speed * 1.3;
+            p.vy = p.vy / speed * 1.3;
           }
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = '#ef4444';
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(239,68,68,.2)';
+          ctx.fillStyle = '#fb646b';
           ctx.fill();
         }
 
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const a = particles[i];
-            const b = particles[j];
-            const dx = a.x - b.x;
-            const dy = a.y - b.y;
-            const d = Math.sqrt(dx * dx + dy * dy);
+        if (frame % 2 === 0) {
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const a = particles[i], b = particles[j];
+              const d = Math.hypot(a.x - b.x, a.y - b.y);
 
-            if (d < 120) {
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = 'rgba(239,68,68,' + (.4 * (1 - d / 120)) + ')';
-              ctx.lineWidth = 1;
-              ctx.stroke();
+              if (d < 105) {
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = 'rgba(239,68,68,' + (.13 * (1 - d / 105)) + ')';
+                ctx.lineWidth = .7;
+                ctx.stroke();
+              }
             }
           }
         }
@@ -716,7 +1053,7 @@
       tick();
     })();
 
-    // ========== ELEMENTS ==========
+    // ELEMENTS
     const messagesEl = document.getElementById('messages');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
@@ -724,40 +1061,39 @@
     const ttsBtn = document.getElementById('tts-btn');
     const attractBtn = document.getElementById('attract-btn');
     const historyList = document.getElementById('history-list');
+    const welcome = document.getElementById('welcome');
 
     let ttsOn = false;
-    let turnCount = 0;
 
     try {
       ttsOn = localStorage.getItem('ookwa_tts') === '1';
     } catch (e) {}
 
-    // ========== PARTICLE BUTTON ==========
+    // PARTICLE CONTROL
     function updateAttractBtn() {
       const on = !!window.ookwaAttract;
-
       attractBtn.classList.toggle('on', on);
-      attractBtn.title = on ? 'Attract particles' : 'Repel particles';
+      attractBtn.title = on ? 'Particles attract to your cursor' : 'Particles repel from your cursor';
       attractBtn.textContent = on ? '⊙' : '⊕';
+      attractBtn.setAttribute('aria-pressed', String(on));
     }
 
     updateAttractBtn();
 
     attractBtn.addEventListener('click', () => {
       window.ookwaAttract = !window.ookwaAttract;
-
       try {
         localStorage.setItem('ookwa_attract', window.ookwaAttract ? '1' : '0');
       } catch (e) {}
-
       updateAttractBtn();
     });
 
-    // ========== VOICE ==========
+    // VOICE
     function updateTtsBtn() {
       ttsBtn.classList.toggle('on', ttsOn);
       ttsBtn.title = ttsOn ? 'Turn voice off' : 'Turn voice on';
       ttsBtn.textContent = ttsOn ? '🔊' : '🔇';
+      ttsBtn.setAttribute('aria-pressed', String(ttsOn));
     }
 
     updateTtsBtn();
@@ -783,25 +1119,24 @@
 
       const clean = String(text)
         .replace(/\*\*/g, '')
+        .replace(/[`#*_]/g, '')
         .replace(/\n+/g, '. ');
 
       const utter = new SpeechSynthesisUtterance(clean);
-      utter.rate = 1.05;
+      utter.rate = 1.02;
       utter.pitch = 1;
 
       const voices = window.speechSynthesis.getVoices();
-
       const voice =
         voices.find(v => /^en/i.test(v.lang) && /google|microsoft|samantha|daniel/i.test(v.name)) ||
         voices.find(v => /^en/i.test(v.lang));
 
       if (voice) utter.voice = voice;
-
       window.speechSynthesis.speak(utter);
     }
 
-    // ========== MATH ==========
-    function tryMath(raw, q) {
+    // BASIC MATH
+    function tryMath(raw) {
       const match = raw.match(
         /^\s*(-?\d+(?:\.\d+)?)\s*([+\-*/×÷])\s*(-?\d+(?:\.\d+)?)\s*\??\s*$/
       );
@@ -825,43 +1160,36 @@
         };
 
         const result = operations[op]();
-
         return 'The answer is ' + Number(result.toPrecision(10)) + '.';
       }
 
+      const prefix = /^(what(?:'s| is)|calculate|compute|solve|eval|math)\s+/i;
+      let expr = raw.replace(prefix, '').replace(/\?+$/g, '').trim();
+
       const looksLikeMath =
-        /^[\d\s+\-*/().%^]+$/.test(raw) ||
-        /\d\s*[\+\-*/x×÷^%]\s*\d/i.test(q) ||
-        /^(what(?:'s| is)|calculate|compute|solve|eval|math)\b/i.test(q) ||
-        /\b(plus|minus|times|multiplied|divided|squared|cubed|percent)\b/i.test(q);
+        /^(?:what(?:'s| is)|calculate|compute|solve|eval|math)\b/i.test(raw) ||
+        /\b(multiplied by|divided by|plus|minus|times|squared|cubed|to the power of)\b/i.test(raw);
 
       if (!looksLikeMath) return null;
-
-      let expr = raw
-        .replace(/^(what(?:'s| is)|calculate|compute|solve|eval|math)\s+/i, '')
-        .replace(/\?+$/g, '')
-        .trim();
 
       expr = expr
         .replace(/\bmultiplied by\b/gi, '*')
         .replace(/\bdivided by\b/gi, '/')
+        .replace(/\bto the power of\b/gi, '**')
         .replace(/\bplus\b/gi, '+')
         .replace(/\bminus\b/gi, '-')
         .replace(/\btimes\b/gi, '*')
         .replace(/\bsquared\b/gi, '**2')
         .replace(/\bcubed\b/gi, '**3')
-        .replace(/\bto the power of\b/gi, '**')
         .replace(/×/g, '*')
         .replace(/÷/g, '/')
         .replace(/\^/g, '**');
 
-      // Only permit arithmetic characters.
       if (!/^[\d\s+\-*/().%]+$/.test(expr) || !/\d/.test(expr)) {
         return null;
       }
 
       try {
-        // The expression is restricted to numeric arithmetic characters.
         const result = Function('"use strict"; return (' + expr + ')')();
 
         if (typeof result === 'number' && Number.isFinite(result)) {
@@ -872,96 +1200,106 @@
       return null;
     }
 
-    // ========== OOKWA REPLY ==========
+    // OOKWA RESPONSES
+    // This is a local response engine, not a connected cloud AI model.
     function ookwaReply(input) {
       const text = input.trim();
-      const msg = text.toLowerCase();
+      const msg = text.toLowerCase().replace(/[.!]+$/g, '');
+      const mathResult = tryMath(text);
 
-      turnCount++;
-
-      // Math first, so arithmetic questions get calculated.
-      const mathResult = tryMath(text, msg);
       if (mathResult) return mathResult;
 
       const replies = [
         {
-          test: /^(hi|hello|hey|yo|sup|what's up)\b/i,
+          test: /^(hi|hello|hey|yo|sup|what's up|whats up)\b/,
           answer: () => "Hey! What's up? I'm Ookwa. What can I help you with?"
         },
         {
-          test: /\b(your name|who are you|what are you)\b/i,
-          answer: () => "I'm Ookwa, your AI assistant. I can help answer questions, explain things, brainstorm ideas, and write code."
+          test: /\b(your name|who are you|what are you)\b/,
+          answer: () => "I'm Ookwa, your personal assistant. I can help with ideas, explanations, writing, coding, and everyday questions. What are we working on?"
         },
         {
-          test: /\bhow are you\b|\bhow's it going\b/i,
+          test: /\bhow are you\b|\bhow's it going\b/,
           answer: () => "I'm ready to help! What's on your mind?"
         },
         {
-          test: /\b(thank you|thanks|ty)\b/i,
-          answer: () => "You're welcome! Let me know if you need anything else."
+          test: /\b(thank you|thanks|ty)\b/,
+          answer: () => "You're welcome! Let me know what else you need."
         },
         {
-          test: /\b(bye|goodbye|see you)\b/i,
-          answer: () => "See you later! Feel free to come back whenever you need help."
+          test: /^(bye|goodbye|see you|later)\b/,
+          answer: () => "See you later! Come back anytime you need a hand."
         },
         {
-          test: /\b(time|date|today)\b/i,
-          answer: () => "Today's date is " + new Date().toLocaleDateString() + "."
-        },
-        {
-          test: /\b(joke|make me laugh)\b/i,
+          test: /\b(joke|make me laugh)\b/,
           answer: () => {
             const jokes = [
               "Why do programmers prefer dark mode? Because light attracts bugs.",
               "Why did the computer go to the doctor? It caught a virus.",
               "Why was the JavaScript developer sad? Because they didn't know how to null their feelings.",
-              "I told my computer I needed a break. It said, 'No problem, I'll go to sleep.'"
+              "I told my computer I needed a break. It said, 'No problem, I'll go to sleep.'",
+              "Why do Java developers wear glasses? Because they can't C#."
             ];
-
             return jokes[Math.floor(Math.random() * jokes.length)];
           }
         },
         {
-          test: /\b(minecraft|smp|server|plugin)\b/i,
-          answer: () => "I can help with Minecraft servers, SMP ideas, plugins, commands, permissions, configuration files, and troubleshooting. Tell me exactly what you're trying to do."
+          test: /\b(what time is it|current time|what's the time)\b/,
+          answer: () => "Your device's current time is " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + "."
         },
         {
-          test: /\b(html|css|javascript|python|coding|code|programming|error|bug)\b/i,
-          answer: () => "I can help you write code, debug errors, explain how something works, or improve an existing project. Send me your code and tell me what you want it to do."
+          test: /\b(what's the date|what is the date|what day is it|today's date|todays date)\b/,
+          answer: () => "The date on your device is " + new Date().toLocaleDateString([], {weekday:'long', year:'numeric', month:'long', day:'numeric'}) + "."
         },
         {
-          test: /\b(sad|upset|stressed|angry|lonely|bad day)\b/i,
-          answer: () => "I'm sorry things feel difficult right now. Want to tell me what happened? I'll listen and try to help."
+          test: /\b(minecraft|smp|server|plugin|luckperms|placeholderapi|spigot|paper mc)\b/,
+          answer: () => "I can help with Minecraft servers, SMP ideas, plugins, commands, permissions, configuration files, and troubleshooting. Tell me your server software, Minecraft version, and what you're trying to set up."
         },
         {
-          test: /\b(help|what can you do)\b/i,
-          answer: () => "I can help with questions, writing, coding, gaming, schoolwork, ideas, explanations, and problem-solving. Ask me anything!"
+          test: /\b(discord bot|discord server|discord role|discord channel|discord.js)\b/,
+          answer: () => "I can help plan your Discord server, organize roles and channels, write rules or applications, and build bot features. Tell me whether you're using a bot builder or coding with something like discord.js."
+        },
+        {
+          test: /\b(html|css|javascript|python|coding|code|programming|error|bug|website|webpage)\b/,
+          answer: () => "I can help with website design, HTML, CSS, JavaScript, Python, debugging, and new features. Send your code and explain what you want to change, and I'll help you work through it."
+        },
+        {
+          test: /\b(idea|ideas|brainstorm|creative|project idea)\b/,
+          answer: () => "Let's come up with something good. Think about what you want to build, who it's for, and what would make it different. Tell me the topic or goal, and I'll suggest some specific ideas."
+        },
+        {
+          test: /\b(study|homework|school|explain|learn|math|science|essay)\b/,
+          answer: () => "I can help you understand the topic, solve problems step by step, or improve a written answer. Send me the exact question, and I'll keep the explanation clear and focused."
+        },
+        {
+          test: /\b(sad|upset|stressed|angry|lonely|bad day|overwhelmed)\b/,
+          answer: () => "I'm sorry things feel difficult right now. If you want to talk about what happened, I'm here to listen and help you think through what might make things easier."
+        },
+        {
+          test: /\b(help|what can you do|your features|capabilities)\b/,
+          answer: () => "I can help brainstorm ideas, explain concepts, write and edit text, assist with coding, work through math, and suggest ways to solve problems. I work from built-in rules and patterns in this version, so I may need extra context for unfamiliar questions."
         }
       ];
 
-      const match = replies.find(item => item.test.test(text));
+      const match = replies.find(item => item.test.test(msg));
       if (match) return match.answer();
 
-      if (/^(why)\b/i.test(msg)) {
-        return "There could be a few reasons. Give me a little more context about what you're asking, and I'll help explain why.";
+      if (/^(why)\b/.test(msg)) {
+        return "There may be a few reasons, depending on the situation. Tell me what you're referring to and what you already know, and I'll help break it down.";
       }
 
-      if (/^(how)\b/i.test(msg)) {
-        return "I'll help you work through it step by step. Can you give me a little more detail about what you're trying to do?";
+      if (/^(how)\b/.test(msg)) {
+        return "Let's break it down into manageable steps. Tell me a little more about your goal or share the instructions you're working with.";
       }
 
-      if (/^(what|who|when|where|which)\b/i.test(msg)) {
-        return "I want to give you an accurate answer. Could you add a little context to your question so I understand exactly what you mean?";
+      if (/^(what|who|when|where|which)\b/.test(msg) || text.endsWith('?')) {
+        return "I want to understand your question properly. Could you add a little context or tell me what the question is about? I'll try to give you a useful answer.";
       }
 
-      if (text.endsWith('?')) {
-        return "That's a good question. Tell me a little more about the situation, and I'll help you figure it out.";
-      }
-
-      return "I hear you. Tell me a little more about what you mean, and I'll do my best to help.";
+      return "I'm following. Could you tell me a little more about what you mean or what you'd like to accomplish? That will help me give you a more relevant response.";
     }
 
-    // ========== CHAT MESSAGES ==========
+    // CHAT MESSAGES
     function addMessage(text, type) {
       const div = document.createElement('div');
       div.className = 'msg ' + type;
@@ -969,9 +1307,9 @@
       if (type === 'ai') {
         const label = document.createElement('div');
         label.className = 'ai-label';
-        label.textContent = 'OOKWA 1.0';
+        label.textContent = 'OOKWA';
 
-        const body = document.createElement('span');
+        const body = document.createElement('div');
         body.className = 'ai-body';
 
         div.append(label, body);
@@ -979,10 +1317,37 @@
         div.textContent = text;
       }
 
+      if (welcome && welcome.isConnected) welcome.remove();
+
       messagesEl.appendChild(div);
       messagesEl.scrollTop = messagesEl.scrollHeight;
-
       return div;
+    }
+
+    function typeMessage(div, fullText) {
+      const body = div.querySelector('.ai-body');
+      if (!body) return Promise.resolve();
+
+      return new Promise(resolve => {
+        let i = 0;
+        const speed = 8;
+
+        function tick() {
+          if (i <= fullText.length) {
+            body.innerHTML = escapeHtml(fullText.slice(0, i))
+              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\n/g, '<br>');
+
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            i++;
+            setTimeout(tick, speed);
+          } else {
+            resolve();
+          }
+        }
+
+        tick();
+      });
     }
 
     function escapeHtml(s) {
@@ -994,39 +1359,11 @@
         .replace(/'/g, '&#039;');
     }
 
-    function typeMessage(div, fullText) {
-      const body = div.querySelector('.ai-body');
-      if (!body) return Promise.resolve();
-
-      return new Promise(resolve => {
-        let i = 0;
-        const speed = 8 + Math.random() * 6;
-
-        function tick() {
-          if (i <= fullText.length) {
-            body.innerHTML = escapeHtml(fullText.slice(0, i))
-              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br>');
-
-            messagesEl.scrollTop = messagesEl.scrollHeight;
-            i++;
-
-            setTimeout(tick, speed);
-          } else {
-            resolve();
-          }
-        }
-
-        tick();
-      });
-    }
-
-    // ========== SEND MESSAGE ==========
+    // SEND MESSAGE
     let isSending = false;
 
     async function sendMessage() {
       const text = userInput.value.trim();
-
       if (!text || isSending) return;
 
       isSending = true;
@@ -1036,7 +1373,6 @@
 
       userInput.value = '';
       userInput.style.height = 'auto';
-
       saveToHistory(text);
 
       typingEl.classList.add('visible');
@@ -1060,27 +1396,36 @@
           sendBtn.disabled = false;
           userInput.focus();
         }
-      }, 300 + Math.random() * 300);
+      }, 350);
     }
 
-    sendBtn.onclick = sendMessage;
+    sendBtn.addEventListener('click', sendMessage);
 
-    userInput.onkeydown = e => {
+    userInput.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
       }
-    };
+    });
 
-    userInput.oninput = () => {
+    userInput.addEventListener('input', () => {
       userInput.style.height = 'auto';
-      userInput.style.height = Math.min(userInput.scrollHeight, 120) + 'px';
-    };
+      userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+    });
 
-    // ========== HISTORY ==========
+    document.querySelectorAll('.suggestion').forEach(button => {
+      button.addEventListener('click', () => {
+        userInput.value = button.dataset.prompt || '';
+        userInput.focus();
+        userInput.dispatchEvent(new Event('input'));
+      });
+    });
+
+    // HISTORY
     function getHistory() {
       try {
-        return JSON.parse(localStorage.getItem('ookwa_history') || '[]');
+        const parsed = JSON.parse(localStorage.getItem('ookwa_history') || '[]');
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
         return [];
       }
@@ -1088,7 +1433,6 @@
 
     function saveToHistory(question) {
       let hist = getHistory();
-
       hist.unshift({ q: question, t: Date.now() });
       hist = hist.slice(0, 50);
 
@@ -1101,16 +1445,22 @@
 
     function renderHistory() {
       const hist = getHistory();
-      historyList.innerHTML = '';
+      historyList.replaceChildren();
 
       if (!hist.length) {
-        historyList.innerHTML = '<div class="history-empty">Questions appear here</div>';
+        const empty = document.createElement('div');
+        empty.className = 'history-empty';
+        empty.textContent = 'Your recent questions will appear here.';
+        historyList.appendChild(empty);
         return;
       }
 
       hist.forEach(item => {
-        const div = document.createElement('div');
+        const div = document.createElement('button');
+        div.type = 'button';
         div.className = 'history-item';
+        div.style.textAlign = 'left';
+        div.style.width = '100%';
 
         const question = document.createElement('div');
         question.className = 'q';
@@ -1127,24 +1477,24 @@
 
         div.append(question, time);
 
-        div.onclick = () => {
+        div.addEventListener('click', () => {
           userInput.value = item.q;
           userInput.focus();
-        };
+          userInput.dispatchEvent(new Event('input'));
+        });
 
         historyList.appendChild(div);
       });
     }
 
-    document.getElementById('clear-history').onclick = () => {
+    document.getElementById('clear-history').addEventListener('click', () => {
       try {
         localStorage.removeItem('ookwa_history');
       } catch (e) {}
-
       renderHistory();
-    };
+    });
 
-    // ========== RATINGS ==========
+    // RATINGS
     const stars = document.querySelectorAll('.star');
     const ratingFeedback = document.getElementById('rating-feedback');
     const ratingAvg = document.getElementById('rating-avg');
@@ -1158,68 +1508,52 @@
     function loadRating() {
       try {
         const saved = localStorage.getItem('ookwa_rating');
-
         if (saved) {
           setStars(Number(saved));
-          ratingFeedback.textContent = 'Thanks!';
+          ratingFeedback.textContent = 'Thanks for your feedback!';
         }
       } catch (e) {}
+      updateAvg();
+    }
 
+    function submitRating(val) {
+      try {
+        localStorage.setItem('ookwa_rating', val);
+        let ratings = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]');
+        if (!Array.isArray(ratings)) ratings = [];
+        ratings.push(val);
+        ratings = ratings.slice(-100);
+        localStorage.setItem('ookwa_ratings_list', JSON.stringify(ratings));
+      } catch (e) {}
+
+      setStars(val);
+      ratingFeedback.textContent = ['', 'Thanks for the feedback', 'Thanks for the feedback', 'Glad you like it', 'Awesome, thank you!', 'Amazing! Thank you!'][val];
       updateAvg();
     }
 
     stars.forEach(star => {
-      star.onclick = () => {
-        const val = Number(star.dataset.val);
-
-        try {
-          localStorage.setItem('ookwa_rating', val);
-
-          let ratings = JSON.parse(
-            localStorage.getItem('ookwa_ratings_list') || '[]'
-          );
-
-          ratings.push(val);
-          ratings = ratings.slice(-100);
-
-          localStorage.setItem('ookwa_ratings_list', JSON.stringify(ratings));
-        } catch (e) {}
-
-        setStars(val);
-
-        ratingFeedback.textContent = [
-          '', 'Not great', 'Okay', 'Good', 'Really good', 'Amazing'
-        ][val];
-
-        updateAvg();
-      };
-
-      star.onmouseenter = () => {
-        setStars(Number(star.dataset.val));
-      };
+      star.addEventListener('click', () => submitRating(Number(star.dataset.val)));
+      star.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          submitRating(Number(star.dataset.val));
+        }
+      });
+      star.addEventListener('mouseenter', () => setStars(Number(star.dataset.val)));
     });
 
-    document.getElementById('stars').onmouseleave = () => {
+    document.getElementById('stars').addEventListener('mouseleave', () => {
       let saved = null;
-
-      try {
-        saved = localStorage.getItem('ookwa_rating');
-      } catch (e) {}
-
-      if (saved) {
-        setStars(Number(saved));
-      } else {
-        stars.forEach(star => star.classList.remove('active'));
-      }
-    };
+      try { saved = localStorage.getItem('ookwa_rating'); } catch (e) {}
+      if (saved) setStars(Number(saved));
+      else stars.forEach(star => star.classList.remove('active'));
+    });
 
     function updateAvg() {
       let ratings = [];
-
       try {
-        ratings = JSON.parse(
-          localStorage.getItem('ookwa_ratings_list') || '[]'
-        );
+        ratings = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]');
+        if (!Array.isArray(ratings)) ratings = [];
       } catch (e) {}
 
       if (!ratings.length) {
@@ -1227,16 +1561,14 @@
         return;
       }
 
-      const avg = (
-        ratings.reduce((a, b) => a + b, 0) / ratings.length
-      ).toFixed(1);
-
+      const avg = (ratings.reduce((a,b) => a + Number(b), 0) / ratings.length).toFixed(1);
       ratingAvg.textContent = 'Average rating: ' + avg + ' (' + ratings.length + ')';
     }
 
-    // ========== INITIALIZE ==========
+    // INITIALIZE
     renderHistory();
     loadRating();
   </script>
 </body>
 </html>
+```
