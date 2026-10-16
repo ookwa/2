@@ -3,245 +3,834 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ookwa</title>
+  <title>Ookwa 1.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: #27272a;
+      --border-hover: #3f3f46;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --accent: #ef4444;
+      --cyan: #f87171;
+      --green: #4ade80;
+      --radius: 12px;
     }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #0a0a0f;
-      color: #e8e8f0;
-      line-height: 1.6;
-      overflow-x: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Navigation */
-    nav {
+    /* Moving background */
+    .bg-motion {
       position: fixed;
-      top: 0;
-      width: 100%;
-      padding: 1.2rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background: #0a0a0b;
     }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      background: linear-gradient(135deg, #7c5cff, #00d4ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: #b0b0c0;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #fff;
-    }
-
-    /* Hero */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 5%;
-      position: relative;
-    }
-
-    .hero::before {
-      content: '';
+    .bg-orb {
       position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(124, 92, 255, 0.15) 0%, transparent 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+      animation: orbFloat 18s ease-in-out infinite;
+    }
+    .bg-orb.o1 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.45), transparent 70%);
+      top: -10%; left: 10%;
+    }
+    .bg-orb.o2 {
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(185, 28, 28, 0.35), transparent 70%);
+      bottom: -5%; right: 5%;
+      animation-delay: -6s;
+      animation-duration: 22s;
+    }
+    .bg-orb.o3 {
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(248, 113, 113, 0.25), transparent 70%);
+      top: 40%; left: 45%;
+      animation-delay: -12s;
+      animation-duration: 16s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(40px, -30px) scale(1.08); }
+      50% { transform: translate(-25px, 35px) scale(0.95); }
+      75% { transform: translate(30px, 15px) scale(1.04); }
+    }
+    .bg-grid {
+      position: absolute;
+      inset: -50%;
+      background-image:
+        linear-gradient(rgba(239, 68, 68, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(239, 68, 68, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridDrift 40s linear infinite;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
+    }
+    @keyframes gridDrift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(48px, 48px); }
+    }
+    #particle-canvas {
+      position: fixed !important;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw !important;
+      height: 100vh !important;
+      display: block !important;
+      z-index: 1;
       pointer-events: none;
     }
 
-    .hero h1 {
-      font-size: clamp(3.5rem, 10vw, 7rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: linear-gradient(135deg, #ffffff 0%, #7c5cff 50%, #00d4ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1rem;
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: relative;
+      z-index: 2;
+      background: transparent !important;
     }
 
-    .hero p {
-      font-size: 1.25rem;
-      color: #a0a0b8;
-      max-width: 520px;
-      margin-bottom: 2.5rem;
+    .topbar, .sidebar-left, .sidebar-right, .chat-input-area {
+      background: rgba(17, 17, 19, 0.7);
+      backdrop-filter: blur(8px);
     }
 
-    .btn {
-      display: inline-block;
-      padding: 0.9rem 2.2rem;
-      background: linear-gradient(135deg, #7c5cff, #5a3fd4);
-      color: white;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: transform 0.3s, box-shadow 0.3s;
-      box-shadow: 0 8px 25px rgba(124, 92, 255, 0.35);
+    .topbar {
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1rem; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(124, 92, 255, 0.5);
+    .topbar-brand { display: flex; align-items: center; gap: 0.55rem; }
+    .topbar-logo-mark {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(145deg, #ef4444, #991b1b);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+      flex-shrink: 0;
     }
+    .topbar-logo-mark svg { width: 16px; height: 16px; display: block; }
+    .topbar-logo { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; }
+    .topbar-logo span { color: var(--accent); font-weight: 600; font-size: 0.75rem; margin-left: 0.3rem; }
+    .topbar-right { font-size: 0.8rem; color: var(--muted); }
 
-    /* Sections */
-    section {
-      padding: 6rem 5%;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    section h2 {
-      font-size: 2.2rem;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(90deg, #fff, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .about p {
-      color: #b0b0c0;
-      font-size: 1.1rem;
-      max-width: 700px;
-    }
-
-    .features {
+    .main {
+      flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
+      grid-template-columns: 180px 1fr 200px;
+      overflow: hidden;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: transform 0.3s, border-color 0.3s;
+    .sidebar-left {
+      background: var(--surface); border-right: 1px solid var(--border);
+      padding: 0.85rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem;
+    }
+    .sidebar-title {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem;
+    }
+    .rating-box {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.8rem;
+    }
+    .rating-box h3 { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .rating-box p { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.65rem; }
+    .stars { display: flex; gap: 0.15rem; margin-bottom: 0.5rem; }
+    .star {
+      font-size: 1.25rem; cursor: pointer; color: #3f3f46;
+      transition: color 0.15s, transform 0.15s; user-select: none;
+    }
+    .star:hover, .star.active { color: #fbbf24; transform: scale(1.1); }
+    .rating-feedback { font-size: 0.7rem; color: var(--green); min-height: 1em; }
+    .rating-avg { margin-top: 0.4rem; font-size: 0.7rem; color: var(--muted); }
+    .rating-avg strong { color: #fbbf24; }
+
+    .contact-card {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.8rem; margin-top: auto;
+    }
+    .contact-card h3 { font-size: 0.75rem; font-weight: 600; margin-bottom: 0.55rem; }
+    .contact-item { display: flex; flex-direction: column; gap: 0.05rem; margin-bottom: 0.55rem; font-size: 0.7rem; }
+    .contact-item:last-child { margin-bottom: 0; }
+    .contact-item label { color: var(--muted); font-size: 0.6rem; }
+    .contact-item a { color: var(--cyan); text-decoration: none; word-break: break-all; }
+    .contact-item a:hover { text-decoration: underline; }
+    .contact-item span { color: var(--text); }
+
+    .chat-area { display: flex; flex-direction: column; overflow: hidden; background: transparent; }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 1.15rem 1.35rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .msg {
+      max-width: 72%; padding: 0.7rem 0.95rem; border-radius: 14px;
+      font-size: 0.9rem; line-height: 1.55; animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.user {
+      align-self: flex-end; background: var(--accent); color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.ai {
+      align-self: flex-start; background: var(--surface-2);
+      border: 1px solid var(--border); border-bottom-left-radius: 4px;
+    }
+    .msg.ai .ai-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--accent); margin-bottom: 0.25rem;
+    }
+    .msg.system {
+      align-self: center; background: transparent; border: none;
+      color: var(--muted); font-size: 0.8rem; max-width: 90%; text-align: center;
     }
 
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(124, 92, 255, 0.4);
+    .typing {
+      align-self: flex-start; padding: 0.7rem 0.95rem; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: 14px; border-bottom-left-radius: 4px;
+      display: none; margin: 0 1.35rem 0.35rem; align-items: center; gap: 0.55rem;
+    }
+    .typing.visible { display: flex; }
+    .typing-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em; color: var(--accent);
+    }
+    .typing-dots { display: flex; gap: 4px; align-items: center; }
+    .typing-dots span {
+      width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-4px); opacity: 1; }
     }
 
-    .card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 0.75rem;
-      color: #e0e0f0;
+    .chat-input-area {
+      padding: 0.75rem 1.15rem 1rem; border-top: 1px solid var(--border);
+      background: var(--surface); display: flex; gap: 0.55rem; align-items: flex-end;
+    }
+    .chat-input-area textarea {
+      flex: 1; padding: 0.65rem 0.95rem; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-size: 0.9rem; font-family: inherit; resize: none; outline: none;
+      max-height: 120px; min-height: 40px; line-height: 1.4;
+    }
+    .chat-input-area textarea:focus { border-color: var(--accent); }
+    .chat-input-area textarea::placeholder { color: var(--muted); }
+
+    .tts-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--muted); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .tts-btn:hover { border-color: var(--border-hover); color: var(--text); }
+    .tts-btn.on {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(239, 68, 68, 0.12);
     }
 
-    .card p {
-      color: #9090a8;
-      font-size: 0.95rem;
+    .attract-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--muted); font-size: 0.85rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.15s; font-weight: 700;
+    }
+    .attract-btn:hover { border-color: var(--border-hover); color: var(--text); }
+    .attract-btn.on {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(239, 68, 68, 0.12);
     }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 3rem 5%;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      color: #606078;
-      font-size: 0.9rem;
+    .send-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: none;
+      background: var(--accent); color: white; font-size: 1.05rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
+    .send-btn:hover { filter: brightness(1.1); }
+    .send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-    /* Mobile */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
+    .sidebar-right {
+      background: var(--surface); border-left: 1px solid var(--border);
+      padding: 0.85rem; overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; }
+    .clear-history { font-size: 0.7rem; color: var(--muted); background: none; border: none; cursor: pointer; }
+    .clear-history:hover { color: #f87171; }
+    .history-list { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+    .history-item {
+      padding: 0.55rem 0.65rem; background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; cursor: pointer; font-size: 0.75rem; transition: border-color 0.15s;
+    }
+    .history-item:hover { border-color: var(--border-hover); }
+    .history-item .q {
+      color: var(--text); white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; margin-bottom: 0.1rem;
+    }
+    .history-item .time { font-size: 0.6rem; color: var(--muted); }
+    .history-empty { color: var(--muted); font-size: 0.75rem; text-align: center; margin-top: 1.25rem; }
+
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar-left, .sidebar-right { display: none; }
     }
   </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">OOKWA</div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-
-  <section class="hero">
-    <h1>Ookwa</h1>
-    <p>Something new is coming. Clean, bold, and built for the future.</p>
-    <a href="#about" class="btn">Explore</a>
-  </section>
-
-  <section id="about" class="about">
-    <h2>About Ookwa</h2>
-    <p>
-      Ookwa is a modern digital experience designed with simplicity and elegance in mind.
-      Whether you're building something new or just exploring, this is the starting point.
-    </p>
-  </section>
-
-  <section id="features">
-    <h2>What we offer</h2>
-    <div class="features">
-      <div class="card">
-        <h3>Simple</h3>
-        <p>Clean design that gets out of the way and lets your content shine.</p>
+  <div class="bg-motion" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-orb o1"></div>
+    <div class="bg-orb o2"></div>
+    <div class="bg-orb o3"></div>
+  </div>
+  <canvas id="particle-canvas"></canvas>
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3.5" fill="white"/>
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="topbar-logo">Ookwa <span>1.0</span></div>
       </div>
-      <div class="card">
-        <h3>Fast</h3>
-        <p>Lightweight and optimized for speed across every device.</p>
-      </div>
-      <div class="card">
-        <h3>Modern</h3>
-        <p>Built with the latest web standards and a focus on great UX.</p>
-      </div>
+      <div class="topbar-right">AI assistant</div>
     </div>
-  </section>
 
-  <section id="contact">
-    <h2>Get in touch</h2>
-    <p style="color: #b0b0c0; font-size: 1.1rem;">
-      Ready to start something with Ookwa? Reach out anytime.
-    </p>
-  </section>
+    <div class="main">
+      <aside class="sidebar-left">
+        <div>
+          <div class="sidebar-title">Rate</div>
+          <div class="rating-box">
+            <h3>How good?</h3>
+            <p>Tap a star</p>
+            <div class="stars" id="stars">
+              <span class="star" data-val="1">★</span>
+              <span class="star" data-val="2">★</span>
+              <span class="star" data-val="3">★</span>
+              <span class="star" data-val="4">★</span>
+              <span class="star" data-val="5">★</span>
+            </div>
+            <div class="rating-feedback" id="rating-feedback"></div>
+            <div class="rating-avg" id="rating-avg"></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <h3>Contact</h3>
+          <div class="contact-item">
+            <label>Email</label>
+            <a href="mailto:kypton335@gmail.com">kypton335@gmail.com</a>
+          </div>
+          <div class="contact-item">
+            <label>Discord</label>
+            <span>@oowa</span>
+          </div>
+          <div class="contact-item">
+            <label>Alt</label>
+            <span>@oowa</span>
+          </div>
+        </div>
+      </aside>
 
-  <footer>
-    © 2026 Ookwa. All rights reserved.
-  </footer>
+      <div class="chat-area">
+        <div class="chat-messages" id="messages">
+          <div class="msg system">Ookwa 1.0 — ask anything. Turn on 🔊 for voice answers.</div>
+        </div>
+        <div class="typing" id="typing">
+          <span class="typing-label">OOKWA 1.0</span>
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="chat-input-area">
+          <textarea id="user-input" placeholder="Message Ookwa..." rows="1"></textarea>
+          <button class="attract-btn" id="attract-btn" title="Particles: repel (click for attract)">⊕</button>
+          <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇</button>
+          <button class="send-btn" id="send-btn">➤</button>
+        </div>
+      </div>
+
+      <aside class="sidebar-right">
+        <div class="history-header">
+          <div class="sidebar-title">History</div>
+          <button class="clear-history" id="clear-history">Clear</button>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">Questions appear here</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // ========== PARTICLES ==========
+    window.ookwaAttract = false;
+    try { window.ookwaAttract = localStorage.getItem('ookwa_attract') === '1'; } catch (e) {}
+
+    (function initParticles() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) {
+        console.error('Ookwa: particle canvas missing');
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      let w = window.innerWidth;
+      let h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+
+      const mouse = { x: w / 2, y: h / 2 };
+      const particles = [];
+      const COUNT = 45;
+
+      // Spread particles across the whole screen
+      for (let i = 0; i < COUNT; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          r: 2.5 + Math.random() * 3
+        });
+      }
+
+      window.addEventListener('resize', function () {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+      document.addEventListener('mousemove', function (e) {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+
+      function tick() {
+        ctx.clearRect(0, 0, w, h);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Bounce at edges so they stay spread across the screen
+          if (p.x < 0 || p.x > w) p.vx *= -1;
+          if (p.y < 0 || p.y > h) p.vy *= -1;
+          p.x = Math.max(0, Math.min(w, p.x));
+          p.y = Math.max(0, Math.min(h, p.y));
+
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+          // Milder mouse reaction — doesn't fling particles far away
+          if (dist < 100) {
+            const falloff = 1 - dist / 100;
+            const strength = (window.ookwaAttract ? 0.025 : -0.025) * falloff;
+            p.vx += (dx / dist) * strength;
+            p.vy += (dy / dist) * strength;
+          }
+
+          // Stronger damping = settles faster, less runaway motion
+          p.vx *= 0.96;
+          p.vy *= 0.96;
+
+          // Cap speed so they never shoot off
+          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+          if (speed > 2.2) {
+            p.vx = (p.vx / speed) * 2.2;
+            p.vy = (p.vy / speed) * 2.2;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = '#ef4444';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(239,68,68,0.2)';
+          ctx.fill();
+        }
+
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i];
+            const b = particles[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 120) {
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = 'rgba(239,68,68,' + (0.4 * (1 - d / 120)) + ')';
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    const messagesEl = document.getElementById('messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const typingEl = document.getElementById('typing');
+    const ttsBtn = document.getElementById('tts-btn');
+    const attractBtn = document.getElementById('attract-btn');
+    let turnCount = 0;
+    let ttsOn = false;
+    try { ttsOn = localStorage.getItem('ookwa_tts') === '1'; } catch (e) {}
+
+    // ========== ATTRACT / REPEL BUTTON ==========
+    function updateAttractBtn() {
+      if (!attractBtn) return;
+      const on = !!window.ookwaAttract;
+      attractBtn.classList.toggle('on', on);
+      attractBtn.title = on ? 'ATTRACT mode — particles follow cursor' : 'REPEL mode — particles flee cursor (click to attract)';
+      attractBtn.textContent = on ? '⊙' : '⊕';
+    }
+    updateAttractBtn();
+    if (attractBtn) {
+      attractBtn.addEventListener('click', function () {
+        window.ookwaAttract = !window.ookwaAttract;
+        try { localStorage.setItem('ookwa_attract', window.ookwaAttract ? '1' : '0'); } catch (e) {}
+        updateAttractBtn();
+      });
+    }
+
+    // ========== TTS ==========
+    function updateTtsBtn() {
+      ttsBtn.classList.toggle('on', ttsOn);
+      ttsBtn.title = ttsOn ? 'Voice on — click to turn off' : 'Voice off — click to hear answers';
+      ttsBtn.textContent = ttsOn ? '🔊' : '🔇';
+    }
+    updateTtsBtn();
+
+    ttsBtn.onclick = () => {
+      ttsOn = !ttsOn;
+      localStorage.setItem('ookwa_tts', ttsOn ? '1' : '0');
+      updateTtsBtn();
+      if (!ttsOn && window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+
+    function speakText(text) {
+      if (!ttsOn || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const clean = String(text).replace(/\*\*/g, '').replace(/\n+/g, '. ');
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.rate = 1.05;
+      utter.pitch = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const en = voices.find(v => /en/i.test(v.lang) && /google|microsoft|samantha|daniel/i.test(v.name))
+        || voices.find(v => /^en/i.test(v.lang));
+      if (en) utter.voice = en;
+      window.speechSynthesis.speak(utter);
+    }
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // ========== MATH ==========
+    function tryMath(raw, q) {
+      const looksLikeMath =
+        /^[\d\s+\-*/().%^]+$/.test(raw) ||
+        /\d\s*[\+\-\*\/x×÷^%]\s*\d/.test(q) ||
+        /^(what(?:'s| is)|calculate|compute|solve|eval|math)\b/i.test(q) ||
+        /\b(plus|minus|times|multiplied|divided|over|squared|cubed|power|percent)\b/.test(q);
+      if (!looksLikeMath) return null;
+
+      let expr = raw
+        .replace(/^(what(?:'s| is)|calculate|compute|solve|eval|math)\s+/i, '')
+        .replace(/\?+$/g, '').trim();
+
+      expr = expr
+        .replace(/\bplus\b/gi, '+')
+        .replace(/\bminus\b/gi, '-')
+        .replace(/\b(times|multiplied by|x|×)\b/gi, '*')
+        .replace(/\b(divided by|over|÷)\b/gi, '/')
+        .replace(/\bsquared\b/gi, '**2')
+        .replace(/\bcubed\b/gi, '**3')
+        .replace(/\bto the power of\b/gi, '**')
+        .replace(/\bpower\b/gi, '**')
+        .replace(/\^/g, '**')
+        .replace(/\bpercent of\b/gi, '*0.01*')
+        .replace(/%/g, '/100')
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/');
+
+      const safe = expr.replace(/[^0-9+\-*/().%\s]/g, '');
+      if (!safe || !/\d/.test(safe)) return null;
+
+      try {
+        const result = Function('"use strict"; return (' + safe + ')')();
+        if (typeof result === 'number' && isFinite(result)) {
+          let display = result;
+          if (Math.abs(result) >= 1e10 || (Math.abs(result) < 1e-6 && result !== 0)) {
+            display = result.toExponential(6);
+          } else if (!Number.isInteger(result)) {
+            display = Math.round(result * 1e10) / 1e10;
+          }
+          return '**' + safe.trim() + ' = ' + display + '**';
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    // ========== AI ==========
+    function ookwaReply(question) {
+      const raw = question.trim();
+      const q = raw.toLowerCase();
+      turnCount++;
+
+      const mathResult = tryMath(raw, q);
+      if (mathResult) return mathResult;
+
+      if (/^(what is|what's|whats|define|explain)\s+/i.test(raw) && !/[\d+\-*/]/.test(raw)) {
+        return explainTopic(raw.replace(/^(what is|what's|whats|define|explain)\s+/i, '').replace(/\?+$/, '').trim());
+      }
+
+      if (/^how (do|to|can|should)\s+/i.test(q)) {
+        const task = raw.replace(/^how (do|to|can|should)\s+(i\s+)?/i, '').replace(/\?+$/, '').trim();
+        return 'To **' + task + '**:\n\n1. Break it into small steps\n2. Start with the simplest version\n3. Test as you go\n4. Fix one issue at a time\n\nWhere are you stuck?';
+      }
+
+      if (/^why\s+/i.test(q)) {
+        return 'For "' + raw.replace(/\?+$/, '') + '" — causes are usually incentives, constraints, and history. Share more context for a clearer take.';
+      }
+
+      if (/code|coding|program|javascript|python|html|css|bug|error|function|variable|loop|array|api|debug/.test(q)) {
+        return codeHelp(q);
+      }
+
+      if (/^(hi|hello|hey|sup|yo|howdy|hola|good morning|good evening)\b/i.test(q) || (q.length < 6 && /hi|hey|yo/.test(q))) {
+        return ['Hey — what\'s up?', 'Hi. What do you need?', 'Hello. Ask me anything.'][Math.floor(Math.random() * 3)];
+      }
+
+      if (/who are you|what are you|your name|what is ookwa/.test(q)) {
+        return 'I\'m **Ookwa 1.0**, an AI assistant. Rate me on the left; history is on the right. Turn on the speaker for voice answers.';
+      }
+      if (/email|contact|discord|reach|creator|owner|developer|kypton/.test(q)) {
+        return 'Creator:\n• Email: **kypton335@gmail.com**\n• Discord: **@oowa**\n• Alt: **@oowa**';
+      }
+      if (/rate|rating|stars|feedback/.test(q)) return 'Use the stars on the left. Saved in this browser.';
+      if (/history|saved|searches/.test(q)) return 'Questions save on the right. Click to reuse, Clear to wipe.';
+      if (/tts|voice|speak|speaker|sound/.test(q)) return 'Click the speaker button next to send (🔇/🔊) to turn voice answers on or off.';
+      if (/thank|thanks|thx|ty\b/.test(q)) return 'You\'re welcome. Anything else?';
+      if (/bye|goodbye|see you|cya|later/.test(q)) return 'Later. History stays on this device.';
+      if (/time|what time|date|today|day is it/.test(q)) return 'Local time: **' + new Date().toLocaleString() + '**';
+      if (/how are you|how r u|how's it going/.test(q)) return 'Doing fine. What can I help with?';
+      if (/^(yes|yeah|yep|yup|ok|okay|sure|alright|cool|nice|true|k|kk)\.?$/i.test(q)) return 'Okay. What next?';
+      if (/^(no|nope|nah|not really)\.?$/i.test(q)) return 'Understood. Ask something else whenever.';
+      if (/^(lol|lmao|haha|hehe)\.?$/i.test(q)) return 'Ha. What else is on your mind?';
+      if (/joke|funny|make me laugh/.test(q)) {
+        return ['I told my computer I needed a break — it froze.', 'Why do programmers prefer dark mode? Light attracts bugs.', 'There are 10 types of people: those who understand binary and those who don\'t.'][Math.floor(Math.random() * 3)];
+      }
+      if (/weather/.test(q)) return 'No live weather here — check a weather app. Anything else?';
+      if (/should i|do you think|what do you think|advice|recommend/.test(q)) {
+        return 'On "' + raw.replace(/\?+$/, '') + '":\n\nWeigh **pros, cons, and risk**. Low downside → try a small test. High stakes → get one more fact first.\n\nShare constraints and I\'ll help.';
+      }
+      if (/\?$/.test(raw)) {
+        return '**' + raw.replace(/\?+$/, '') + '?**\n\nPractical approach:\n• Clarify what “good” means\n• List 2–3 options\n• Pick the best trade-off\n\nAdd more detail for a sharper answer.';
+      }
+
+      if (raw.length < 3) return 'Say a bit more and I\'ll respond.';
+      if (raw.length < 25) return 'Got it — "' + raw + '". Want advice, an explanation, or just to keep chatting?';
+      const openers = ['Understood.', 'I follow.', 'Makes sense.', 'Alright.'];
+      const bodies = [
+        'You said: "' + raw.slice(0, 100) + (raw.length > 100 ? '…' : '') + '"\n\nIf this is a problem, define the outcome and smallest test. If it\'s an idea, we can expand it.',
+        'On that: separate facts from assumptions, then pick one action. Want a plan, explanation, or feedback?',
+        'I can work with that. Want:\n• A clear explanation\n• Pros/cons\n• Step-by-step plan\n• A second opinion'
+      ];
+      return openers[Math.floor(Math.random() * openers.length)] + ' ' + bodies[Math.floor(Math.random() * bodies.length)];
+    }
+
+    function explainTopic(topic) {
+      const t = topic.toLowerCase();
+      const known = {
+        ai: 'AI performs tasks that usually need human intelligence — learning, language, patterns, decisions. Modern AI often uses neural networks trained on large datasets.',
+        javascript: 'JavaScript is the main language of the web. It runs in browsers and on servers (Node.js) for interactive pages and apps.',
+        python: 'Python is a readable language used for web backends, data science, automation, and AI.',
+        html: 'HTML structures web pages — headings, text, links, images.',
+        css: 'CSS styles HTML — colors, layout, fonts, animations.',
+        api: 'An API lets programs talk: send a request, get data or an action back (often JSON).',
+        llm: 'An LLM is AI trained on huge text data to generate and understand language.',
+        internet: 'The internet is a global network of computers. The web is one layer on top of it.',
+        gravity: 'Gravity attracts objects with mass. On Earth it pulls things toward the planet\'s center.',
+        dna: 'DNA carries genetic instructions. It\'s a double helix made of bases A, T, C, G.',
+        bitcoin: 'Bitcoin is a decentralized digital currency. Transactions live on a blockchain ledger.'
+      };
+      for (const key of Object.keys(known)) {
+        if (t.includes(key)) return '**' + key.toUpperCase() + '** — ' + known[key] + '\n\nWant a simpler version or an example?';
+      }
+      return '**' + topic + '** — useful frame: what problem it solves, how it works, where people use it. Why are you asking? I can go deeper.';
+    }
+
+    function codeHelp(q) {
+      if (/error|bug|not working|broken|fix/.test(q)) {
+        return 'For bugs, send:\n1. Exact error\n2. Language\n3. Expected vs actual\n4. Code snippet';
+      }
+      if (/javascript|js\b/.test(q)) return 'JS tip: const/let, small functions, console.log. Paste code or describe the goal.';
+      if (/python/.test(q)) return 'Python tip: indentation matters, use venv, read tracebacks bottom-up. Share code or the error.';
+      return 'I can help with code. Tell me language, goal, and what\'s stuck — paste a snippet if you have one.';
+    }
+
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + type;
+      if (type === 'ai') div.innerHTML = '<div class="ai-label">OOKWA 1.0</div><span class="ai-body"></span>';
+      else div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function typeMessage(div, fullText) {
+      const body = div.querySelector('.ai-body');
+      if (!body) return Promise.resolve();
+      return new Promise(resolve => {
+        let i = 0;
+        const speed = 8 + Math.random() * 6;
+        function tick() {
+          if (i <= fullText.length) {
+            body.innerHTML = escapeHtml(fullText.slice(0, i))
+              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\n/g, '<br>');
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            i++;
+            setTimeout(tick, speed);
+          } else resolve();
+        }
+        tick();
+      });
+    }
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      addMessage(text, 'user');
+      userInput.value = '';
+      userInput.style.height = 'auto';
+      sendBtn.disabled = true;
+      saveToHistory(text);
+
+      typingEl.classList.add('visible');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Faster answer: ~0.3–0.8s think time
+      setTimeout(async () => {
+        typingEl.classList.remove('visible');
+        const reply = ookwaReply(text);
+        const aiDiv = addMessage('', 'ai');
+        // Start speaking as soon as we begin typing (when TTS is on)
+        speakText(reply);
+        await typeMessage(aiDiv, reply);
+        sendBtn.disabled = false;
+        userInput.focus();
+      }, 300 + Math.random() * 500);
+    }
+
+    sendBtn.onclick = sendMessage;
+    userInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
+    userInput.oninput = () => {
+      userInput.style.height = 'auto';
+      userInput.style.height = Math.min(userInput.scrollHeight, 120) + 'px';
+    };
+
+    // ========== HISTORY ==========
+    const historyList = document.getElementById('history-list');
+    function getHistory() { try { return JSON.parse(localStorage.getItem('ookwa_history') || '[]'); } catch { return []; } }
+    function saveToHistory(question) {
+      let hist = getHistory();
+      hist.unshift({ q: question, t: Date.now() });
+      if (hist.length > 50) hist = hist.slice(0, 50);
+      localStorage.setItem('ookwa_history', JSON.stringify(hist));
+      renderHistory();
+    }
+    function renderHistory() {
+      const hist = getHistory();
+      historyList.innerHTML = '';
+      if (!hist.length) { historyList.innerHTML = '<div class="history-empty">Questions appear here</div>'; return; }
+      hist.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        const timeStr = new Date(item.t).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        div.innerHTML = '<div class="q">' + escapeHtml(item.q) + '</div><div class="time">' + timeStr + '</div>';
+        div.onclick = () => { userInput.value = item.q; userInput.focus(); };
+        historyList.appendChild(div);
+      });
+    }
+    document.getElementById('clear-history').onclick = () => { localStorage.removeItem('ookwa_history'); renderHistory(); };
+
+    // ========== RATING ==========
+    const stars = document.querySelectorAll('.star');
+    const ratingFeedback = document.getElementById('rating-feedback');
+    const ratingAvg = document.getElementById('rating-avg');
+    function setStars(val) { stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val)); }
+    function loadRating() {
+      const saved = localStorage.getItem('ookwa_rating');
+      if (saved) { setStars(parseInt(saved)); ratingFeedback.textContent = 'Thanks!'; }
+      updateAvg();
+    }
+    stars.forEach(star => {
+      star.onclick = () => {
+        const val = parseInt(star.dataset.val);
+        localStorage.setItem('ookwa_rating', val);
+        let ratings = [];
+        try { ratings = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]'); } catch {}
+        ratings.push(val);
+        if (ratings.length > 100) ratings = ratings.slice(-100);
+        localStorage.setItem('ookwa_ratings_list', JSON.stringify(ratings));
+        setStars(val);
+        ratingFeedback.textContent = ['', 'Not great', 'Okay', 'Good', 'Really good', 'Amazing'][val];
+        updateAvg();
+      };
+      star.onmouseenter = () => {
+        const val = parseInt(star.dataset.val);
+        stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
+      };
+    });
+    document.getElementById('stars').onmouseleave = () => {
+      const saved = localStorage.getItem('ookwa_rating');
+      if (saved) setStars(parseInt(saved));
+      else stars.forEach(s => s.classList.remove('active'));
+    };
+    function updateAvg() {
+      let ratings = [];
+      try { ratings = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]'); } catch {}
+      if (!ratings.length) { ratingAvg.innerHTML = ''; return; }
+      const avg = (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
+      ratingAvg.innerHTML = 'Avg <strong>' + avg + '</strong> (' + ratings.length + ')';
+    }
+
+    renderHistory();
+    loadRating();
+  </script>
 </body>
 </html>
