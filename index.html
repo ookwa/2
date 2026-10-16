@@ -27,7 +27,108 @@
       --green: #4ade80;
       --radius: 16px;
       --shadow: 0 20px 70px rgba(0,0,0,.28);
-    }
+/* Enhanced Ookwa design */
+.topbar {
+  background: rgba(10, 10, 13, .88);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, .16);
+}
+
+.topbar-logo-mark {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.topbar-logo-mark:hover {
+  transform: rotate(-7deg) scale(1.06);
+  box-shadow: 0 0 30px rgba(239, 68, 68, .4);
+}
+
+.main {
+  border-color: rgba(255, 255, 255, .09);
+  background: rgba(12, 12, 15, .55);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .38);
+}
+
+.rating-box,
+.contact-card,
+.side-note {
+  backdrop-filter: blur(14px);
+  transition: transform .2s ease, border-color .2s ease,
+              box-shadow .2s ease;
+}
+
+.rating-box:hover,
+.contact-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, .25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .16);
+}
+
+.suggestion {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, .035),
+    rgba(255, 255, 255, .012)
+  );
+  transition: all .22s ease;
+}
+
+.suggestion:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, .13),
+    rgba(190, 18, 60, .06)
+  );
+  border-color: rgba(248, 113, 113, .42);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, .07);
+  transform: translateY(-3px);
+}
+
+.chat-input-area {
+  border-color: rgba(255, 255, 255, .12);
+  transition: border-color .2s ease, box-shadow .2s ease,
+              transform .2s ease;
+}
+
+.chat-input-area:focus-within {
+  border-color: rgba(248, 113, 113, .65);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .07),
+              0 12px 35px rgba(0, 0, 0, .2);
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #ff626b, #c51f35);
+  box-shadow: 0 4px 18px rgba(239, 68, 68, .23);
+}
+
+.send-btn:hover {
+  box-shadow: 0 5px 25px rgba(239, 68, 68, .35);
+}
+
+.history-item {
+  transition: all .2s ease;
+}
+
+.history-item:hover {
+  transform: translateX(3px);
+}
+
+.contact-item a,
+.contact-item span {
+  transition: color .2s ease;
+}
+
+.contact-item a:hover {
+  color: #fb7185;
+}
+
+.msg.ai {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, .16);
+}
+
+::selection {
+  background: rgba(248, 113, 113, .4);
+  color: white;
+}
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -848,12 +949,12 @@
             <a href="mailto:kypton335@gmail.com">kypton335@gmail.com</a>
           </div>
           <div class="contact-item">
-            <label>Discord</label>
-            <span>@oowa</span>
+            <label>Discord Main</label>
+            <span>@oowa / ookwa</span>
           </div>
           <div class="contact-item">
-            <label>Alternative</label>
-            <span>@oowa</span>
+            <label>Discord Alt</label>
+            <span>@oowa. / missedcalls</span>
           </div>
         </section>
       </aside>
