@@ -447,7 +447,7 @@
       gap: 12px;
     }
 
-    /* THEME PICKER & CONTROLS */
+    /* THEME PICKER */
     .theme-picker-wrapper {
       display: flex;
       align-items: center;
@@ -1138,7 +1138,6 @@
         <div class="input-shell">
           <div class="chat-input-area">
             <textarea id="user-input" placeholder="Message Ookwa..." rows="1"></textarea>
-            <!-- FLEE / ATTRACT PARTICLE BUTTON -->
             <button class="attract-btn" id="attract-btn" title="Toggle particle magnetism">⊕ Flee Cursor</button>
             <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇 Voice</button>
             <button class="send-btn" id="send-btn" aria-label="Send message">➤</button>
@@ -1164,11 +1163,9 @@
   </div>
 
   <script>
-    // HARDCODED OPENROUTER KEY & MODEL
     const OPENROUTER_API_KEY = "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";
     const OPENROUTER_MODEL = "openai/gpt-4o-mini";
 
-    // STATE
     let userName = localStorage.getItem('ookwa_user_name') || '';
     let currentTheme = localStorage.getItem('ookwa_theme') || 'red';
     let chatConversation = [];
@@ -1228,7 +1225,7 @@
     };
 
     // PARTICLES ENGINE (CONNECTED DOTS WITH FLEE & ATTRACT MECHANICS)
-    window.ookwaAttract = false; // default = flee from cursor
+    window.ookwaAttract = false;
 
     (function initParticles() {
       const canvas = document.getElementById('particle-canvas');
@@ -1284,13 +1281,11 @@
           p.x = Math.max(0, Math.min(w, p.x));
           p.y = Math.max(0, Math.min(h, p.y));
 
-          // CURSOR FLEE vs ATTRACT PHYSICS
           const dx = mouse.x - p.x;
           const dy = mouse.y - p.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
           if (dist < 130) {
-            // Negative strength pushes particles AWAY (FLEE), Positive PULLS (ATTRACT)
             const strength = (window.ookwaAttract ? 0.035 : -0.04) * (1 - dist / 130);
             p.vx += (dx / dist) * strength;
             p.vy += (dy / dist) * strength;
@@ -1311,7 +1306,6 @@
           ctx.fill();
         }
 
-        // CONNECTED LINES BETWEEN DOTS
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
             const a = particles[i], b = particles[j];
@@ -1332,7 +1326,6 @@
       tick();
     })();
 
-    // ATTRACT / FLEE BUTTON CONTROL
     const attractBtn = document.getElementById('attract-btn');
     attractBtn.onclick = () => {
       window.ookwaAttract = !window.ookwaAttract;
@@ -1340,7 +1333,6 @@
       attractBtn.textContent = window.ookwaAttract ? '⊙ Magnetic Attract' : '⊕ Flee Cursor';
     };
 
-    // UI ELEMENTS & CHAT LOGIC
     const messagesEl = document.getElementById('messages');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
@@ -1359,7 +1351,6 @@
       if (savedHistory) history = JSON.parse(savedHistory);
     } catch (e) {}
 
-    // VOICE (TTS) CONTROL
     function updateTtsBtn() {
       ttsBtn.classList.toggle('on', ttsOn);
       ttsBtn.textContent = ttsOn ? '🔊 Voice' : '🔇 Voice';
@@ -1385,17 +1376,18 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // LIVE OPENROUTER AI ENGINE
     async function generateAIResponse(query) {
       chatConversation.push({ role: 'user', content: query });
 
       try {
+        const originUrl = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'http://localhost';
+        
         const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer \${OPENROUTER_API_KEY}`,
-            'HTTP-Referer': window.location.origin,
+            'HTTP-Referer': originUrl,
             'X-Title': 'Ookwa AI'
           },
           body: JSON.stringify({
@@ -1407,7 +1399,11 @@
           })
         });
 
-        if (!response.ok) throw new Error(`API error: \${response.status}`);
+        if (!response.ok) {
+          const errData = await response.text();
+          console.error("OpenRouter Error Details:", errData);
+          throw new Error(`API error: \${response.status}`);
+        }
         const data = await response.json();
         const reply = data.choices[0].message.content;
         chatConversation.push({ role: 'assistant', content: reply });
@@ -1415,11 +1411,10 @@
 
       } catch (err) {
         console.error('OpenRouter AI Error:', err);
-        return "I'm having trouble connecting to my cloud network right now. Please check your internet connection or try sending your message again.";
+        return "I'm having trouble connecting to my cloud network right now. Please check your internet connection, run this file through a local web server (like Live Server), or check your browser console for details.";
       }
     }
 
-    // LIGHTWEIGHT MARKDOWN PARSER
     function parseMarkdown(text) {
       let html = text
         .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -1442,7 +1437,6 @@
       }).join('');
     }
 
-    // CHAT MANAGEMENT
     function appendMessage(text, sender) {
       if (welcome && welcome.parentNode) welcome.remove();
 
@@ -1530,7 +1524,6 @@
       };
     });
 
-    // FEEDBACK STARS
     const stars = document.querySelectorAll('.star');
     const feedbackEl = document.getElementById('rating-feedback');
     const avgEl = document.getElementById('rating-avg');
