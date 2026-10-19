@@ -1386,7 +1386,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer \${OPENROUTER_API_KEY}`,
+            'Authorization': 'Bearer ' + OPENROUTER_API_KEY,
             'HTTP-Referer': originUrl,
             'X-Title': 'Ookwa AI'
           },
