@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="Rate your experience with Ookwa.">
+  <title>Rate Ookwa — Feedback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#09090b; --panel:rgba(18,18,22,.86); --panel2:rgba(27,27,33,.9); --border:rgba(255,255,255,.09); --text:#fafafa; --muted:#9696a3; --accent:#ef4444; --accent2:#fb7185; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { min-height:100vh; font-family:Inter,system-ui,sans-serif; background:radial-gradient(ellipse at 50% -15%,#681a24 0%,transparent 55%),var(--bg); color:var(--text); display:grid; place-items:center; padding:24px; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:48px 48px; mask-image:radial-gradient(ellipse at center,#000,transparent 75%); }
+    .page { width:min(100%,620px); position:relative; }
+    .top { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:22px; }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:800; letter-spacing:-.5px; }
+    .logo { width:38px; height:38px; display:grid; place-items:center; border-radius:13px; background:linear-gradient(145deg,#f05252,#c52638); box-shadow:0 5px 22px #0006; color:white; font-size:20px; }
+    .version { font-size:.67rem; font-weight:700; color:#fb7185; background:#ffffff0d; border:1px solid var(--border); border-radius:6px; padding:4px 6px; margin-left:4px; }
+    .back { color:#fff; text-decoration:none; font-size:.8rem; font-weight:650; padding:10px 13px; border:1px solid var(--border); border-radius:10px; background:#ffffff08; transition:.2s; }
+    .back:hover { border-color:#fb7185; transform:translateY(-1px); }
+    .card { padding:clamp(24px,5vw,42px); background:var(--panel); border:1px solid var(--border); border-radius:24px; box-shadow:0 25px 80px #0007; backdrop-filter:blur(22px); animation:rise .45s ease both; }
+    @keyframes rise { from {opacity:0;transform:translateY(10px)} to {opacity:1;transform:translateY(0)} }
+    .eyebrow { color:var(--accent2); font-size:.7rem; text-transform:uppercase; letter-spacing:1.6px; font-weight:800; margin-bottom:12px; }
+    h1 { font-size:clamp(1.8rem,5vw,2.65rem); line-height:1.12; letter-spacing:-1.3px; margin-bottom:12px; }
+    h1 span { background:linear-gradient(100deg,#fb7185,#ef4444); color:transparent; background-clip:text; -webkit-background-clip:text; }
+    .intro { color:var(--muted); font-size:.9rem; line-height:1.75; max-width:470px; margin-bottom:27px; }
+    .rating-label { display:block; font-size:.78rem; font-weight:700; margin-bottom:12px; }
+    .stars { display:flex; gap:9px; margin-bottom:10px; }
+    .star { appearance:none; border:1px solid var(--border); background:var(--panel2); color:#555; border-radius:14px; width:clamp(46px,10vw,62px); height:clamp(46px,10vw,62px); font-size:clamp(1.6rem,5vw,2rem); cursor:pointer; transition:transform .15s,color .15s,border-color .15s,background .15s; }
+    .star:hover,.star.active { color:#fbbf24; border-color:#fbbf2470; background:#fbbf2410; transform:translateY(-3px); }
+    .rating-word { min-height:22px; color:var(--accent2); font-size:.78rem; margin-bottom:24px; }
+    .field-label { display:block; font-size:.78rem; font-weight:700; margin-bottom:9px; }
+    textarea { width:100%; min-height:110px; resize:vertical; padding:13px 14px; background:var(--panel2); border:1px solid var(--border); border-radius:12px; color:var(--text); font:inherit; font-size:.85rem; line-height:1.6; outline:none; }
+    textarea:focus { border-color:#ef4444; box-shadow:0 0 0 3px #ef44441c; }
+    textarea::placeholder { color:#777783; }
+    .submit { width:100%; margin-top:16px; padding:14px 18px; border:0; border-radius:12px; background:linear-gradient(135deg,#f05252,#c52638); color:#fff; font-weight:800; font-size:.88rem; cursor:pointer; transition:transform .18s,filter .18s; }
+    .submit:hover { transform:translateY(-2px); filter:brightness(1.08); }
+    .submit:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .success { display:none; margin-top:16px; padding:13px 14px; border:1px solid #4ade8040; border-radius:12px; background:#4ade800c; color:#86efac; font-size:.82rem; line-height:1.6; }
+    .summary { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:23px; padding-top:20px; border-top:1px solid var(--border); color:var(--muted); font-size:.76rem; }
+    .summary strong { color:#fbbf24; }
+    .note { color:#777783; font-size:.68rem; line-height:1.6; margin-top:15px; }
+    @media(max-width:480px) { body{padding:14px}.top{align-items:flex-start}.card{border-radius:18px}.summary{align-items:flex-start;flex-direction:column} }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div class="brand"><div class="logo">✦</div><div>Ookwa <span class="version">1.0</span></div></div>
+      <a class="back" href="index.html">← Back to chat</a>
+    </header>
+    <section class="card">
+      <div class="eyebrow">Your feedback matters</div>
+      <h1>How was your <span>experience?</span></h1>
+      <p class="intro">Choose a star rating and, if you want, leave a short comment. Your feedback helps shape future improvements to Ookwa.</p>
+      <form id="rating-form">
+        <span class="rating-label">Your rating</span>
+        <div class="stars" id="stars" role="group" aria-label="Choose a rating from one to five stars">
+          <button class="star" type="button" data-rating="1" aria-label="1 star">★</button>
+          <button class="star" type="button" data-rating="2" aria-label="2 stars">★</button>
+          <button class="star" type="button" data-rating="3" aria-label="3 stars">★</button>
+          <button class="star" type="button" data-rating="4" aria-label="4 stars">★</button>
+          <button class="star" type="button" data-rating="5" aria-label="5 stars">★</button>
+        </div>
+        <div class="rating-word" id="rating-word" aria-live="polite">Select a rating to continue.</div>
+        <label class="field-label" for="comment">Anything you'd like to share? <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+        <textarea id="comment" maxlength="500" placeholder="What did you like, or what could be better?"></textarea>
+        <button class="submit" id="submit-rating" type="submit" disabled>Submit feedback</button>
+        <div class="success" id="success" role="status"></div>
+      </form>
+      <div class="summary"><span id="average">No ratings saved in this browser yet.</span><span>Thanks for helping improve Ookwa.</span></div>
+      <p class="note">Note: this demo saves feedback in this browser only. To collect ratings from all visitors, connect a database or feedback service.</p>
+    </section>
+  </main>
+  <script>
+    const starButtons = [...document.querySelectorAll('.star')];
+    const ratingWord = document.getElementById('rating-word');
+    const submitButton = document.getElementById('submit-rating');
+    const form = document.getElementById('rating-form');
+    const average = document.getElementById('average');
+    const success = document.getElementById('success');
+    let selectedRating = 0;
+    const words = ['', 'Sorry to hear that', 'Could be better', 'It was okay', 'Really good', 'Amazing'];
+
+    function setRating(value) {
+      selectedRating = value;
+      starButtons.forEach((button, index) => {
+        button.classList.toggle('active', index < value);
+        button.setAttribute('aria-pressed', String(index + 1 === value));
+      });
+      ratingWord.textContent = words[value] || 'Select a rating to continue.';
+      submitButton.disabled = !value;
+    }
+
+    function readRatings() {
+      try {
+        const values = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]');
+        return Array.isArray(values) ? values.map(Number).filter(n => n >= 1 && n <= 5) : [];
+      } catch { return []; }
+    }
+
+    function updateAverage() {
+      const values = readRatings();
+      if (!values.length) {
+        average.textContent = 'No ratings saved in this browser yet.';
+        return;
+      }
+      const avg = (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1);
+      average.innerHTML = `Average: <strong>${avg}/5</strong> · ${values.length} rating${values.length === 1 ? '' : 's'} saved in this browser`;
+    }
+
+    starButtons.forEach(button => button.addEventListener('click', () => setRating(Number(button.dataset.rating))));
+    const params = new URLSearchParams(location.search);
+    const initialRating = Number(params.get('rating'));
+    if (initialRating >= 1 && initialRating <= 5) setRating(initialRating);
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!selectedRating) return;
+      let ratings = readRatings();
+      ratings.push(selectedRating);
+      if (ratings.length > 500) ratings = ratings.slice(-500);
+      try {
+        localStorage.setItem('ookwa_ratings_list', JSON.stringify(ratings));
+        localStorage.setItem('ookwa_rating', String(selectedRating));
+        const feedbackList = JSON.parse(localStorage.getItem('ookwa_feedback_list') || '[]');
+        const safeList = Array.isArray(feedbackList) ? feedbackList : [];
+        safeList.push({ rating: selectedRating, comment: document.getElementById('comment').value.trim(), date: new Date().toISOString() });
+        localStorage.setItem('ookwa_feedback_list', JSON.stringify(safeList.slice(-100)));
+      } catch {}
+      success.style.display = 'block';
+      success.textContent = 'Thanks! Your rating has been saved in this browser.';
+      submitButton.textContent = 'Feedback submitted';
+      submitButton.disabled = true;
+      updateAverage();
+    });
+    updateAverage();
+  </script>
+</body>
+</html>
