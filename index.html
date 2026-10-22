@@ -732,7 +732,16 @@
     }
 
     .msg.ai .ai-body { color: var(--text); }
-    .msg.ai .ai-body code { background: rgba(0,0,0,.15); padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: .82rem; }
+    .msg.ai .ai-body code { background: rgba(0,0,0,.15); padding: 2px 5px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .82rem; }
+    .msg.ai .ai-body pre { position:relative; margin:10px 0; padding:14px; padding-top:38px; overflow:auto; border:1px solid var(--border); border-radius:10px; background:#09090c; color:#f4f4f5; font: .8rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; white-space:pre; }
+    .code-action { position:absolute; top:7px; right:7px; border:1px solid #34343d; background:#19191f; color:#eee; border-radius:6px; padding:4px 8px; cursor:pointer; font:11px inherit; }
+    .code-action:hover { border-color:var(--accent); }
+    .msg.ai .ai-body pre code { padding:0; background:none; color:inherit; font-size:inherit; }
+    .saved-prompts { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+    .saved-prompt { text-align:left; border:1px solid var(--border); background:var(--surface-2); color:var(--text); padding:8px; border-radius:8px; font-size:.68rem; cursor:pointer; overflow-wrap:anywhere; }
+    .saved-prompt:hover { border-color:var(--accent); }
+    .voice-settings { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0; }
+    .ookwa-panel input[type=range] { padding:0; accent-color:var(--accent); }
     .msg.ai .ai-body ul { margin-left: 18px; margin-top: 6px; margin-bottom: 6px; }
 
     .welcome {
@@ -1007,6 +1016,7 @@
     /* Ookwa personalization + tools */
     :root { --user-accent: #ef4444; --user-font-scale: 1; }
     .chat-area { font-size: calc(1rem * var(--user-font-scale)); }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
     .ai-tools { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
     .ai-tools button,.ookwa-tool-btn { border:1px solid var(--border); color:var(--muted); background:var(--surface-2); border-radius:8px; padding:5px 8px; cursor:pointer; font-size:11px; }
     .ai-tools button:hover,.ookwa-tool-btn:hover { color:var(--text); border-color:var(--user-accent); }
@@ -1197,6 +1207,9 @@
           <strong>Made for curiosity.</strong>
           Explore ideas, ask questions, and keep building something great.
         </div>
+        <div class="sidebar-title" style="margin-top:16px">Saved prompts</div>
+        <div id="saved-prompts-list" class="saved-prompts"><div class="history-empty">Save a useful prompt to reuse it later.</div></div>
+        <button class="ookwa-tool-btn" id="save-current-prompt" style="width:100%;margin-top:8px">＋ Save current prompt</button>
       </aside>
     </main>
   </div>
@@ -1206,10 +1219,14 @@
     <label for="ookwa-theme-select">Theme</label>
     <select id="ookwa-theme-select"><option value="red">Red</option><option value="blue">Blue</option><option value="purple">Purple</option><option value="black">Midnight</option><option value="white">Light</option><option value="green">Green</option><option value="cyan">Cyan</option></select>
     <label for="ookwa-font-size">Chat text size</label><select id="ookwa-font-size"><option value="0.9">Small</option><option value="1">Default</option><option value="1.12">Large</option><option value="1.25">Extra large</option></select>
+    <label for="ookwa-personality">Assistant personality</label><select id="ookwa-personality"><option value="balanced">Balanced and helpful</option><option value="friendly">Friendly and casual</option><option value="professional">Professional</option><option value="creative">Creative and expressive</option><option value="teacher">Patient teacher</option></select>
+    <label for="ookwa-response-length">Response length</label><select id="ookwa-response-length"><option value="concise">Concise</option><option value="balanced">Balanced</option><option value="detailed">Detailed</option></select>
+    <label for="ookwa-voice-select">Read-aloud voice</label><select id="ookwa-voice-select"><option value="auto">Automatic voice</option></select>
+    <label for="ookwa-voice-rate">Voice speed</label><input id="ookwa-voice-rate" type="range" min="0.75" max="1.4" step="0.05" value="1.02">
     <label for="ookwa-instructions">Custom AI instructions</label><textarea id="ookwa-instructions" placeholder="Example: Explain things simply and keep answers concise."></textarea>
     <label for="ookwa-preferences">Saved preferences</label><textarea id="ookwa-preferences" placeholder="Things Ookwa should keep in mind for your chats."></textarea>
     <div class="panel-actions"><button id="ookwa-save-settings">Save settings</button><button id="ookwa-close-settings" type="button">Close</button></div>
-    <p style="font-size:11px;color:var(--muted);line-height:1.5">Settings are saved in this browser. Attachments are read locally; image understanding depends on the connected AI model.</p>
+    <p style="font-size:11px;color:var(--muted);line-height:1.5">Settings and saved prompts stay in this browser. For public deployment, connect the AI through a secure backend; never place a real API key in this HTML. Image understanding depends on the connected AI model.</p>
   </section>
 
   <script>
@@ -1419,9 +1436,10 @@
       window.speechSynthesis.cancel();
       const clean = String(text).replace(/\*\*/g, '').replace(/[`#*_]/g, '').replace(/\n+/g, '. ');
       const utter = new SpeechSynthesisUtterance(clean);
-      utter.rate = 1.02; utter.pitch = 1;
+      utter.rate = Number(localStorage.getItem('ookwa_voice_rate') || '1.02'); utter.pitch = 1;
       const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => /^en/i.test(v.lang) && /google|microsoft|samantha|daniel/i.test(v.name)) || voices.find(v => /^en/i.test(v.lang));
+      const chosen = localStorage.getItem('ookwa_voice_name') || 'auto';
+      const voice = (chosen !== 'auto' && voices.find(v => v.name === chosen)) || voices.find(v => /^en/i.test(v.lang) && /google|microsoft|samantha|daniel/i.test(v.name)) || voices.find(v => /^en/i.test(v.lang));
       if (voice) utter.voice = voice;
       window.speechSynthesis.speak(utter);
     }
@@ -1443,7 +1461,7 @@
           body: JSON.stringify({
             model: OPENROUTER_MODEL,
             messages: [
-              { role: 'system', content: `You are Ookwa 1.0, a highly capable personal AI assistant created for ${userName || 'the user'}. Be concise, intelligent, encouraging, and clear.\nCustom instructions: ${localStorage.getItem('ookwa_custom_instructions') || 'None provided.'}\nSaved user preferences: ${localStorage.getItem('ookwa_saved_preferences') || 'None provided.'}` },
+              { role: 'system', content: `You are Ookwa 1.0, a capable personal AI assistant created for ${userName || 'the user'}. Be accurate, clear, helpful, and honest about uncertainty. Personality: ${localStorage.getItem('ookwa_personality') || 'balanced'}. Response length: ${localStorage.getItem('ookwa_response_length') || 'concise'} (concise means brief, balanced means moderate detail, detailed means explain steps and examples). Use Markdown headings and lists when useful. For code, provide complete usable code when asked and put code in fenced blocks with a language label.\nCustom instructions: ${localStorage.getItem('ookwa_custom_instructions') || 'None provided.'}\nSaved user preferences: ${localStorage.getItem('ookwa_saved_preferences') || 'None provided.'}` },
               ...chatConversation
             ]
           })
@@ -1465,26 +1483,29 @@
       }
     }
 
+    function escapeHtml(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
     function parseMarkdown(text) {
-      let html = text
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      const blocks = [];
+      let source = String(text).replace(/```([\w+-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+        const token = `@@CODEBLOCK${blocks.length}@@`;
+        blocks.push(`<pre data-language="${escapeHtml(lang || 'text')}"><button class="code-action" type="button" data-copy-code>Copy code</button><button class="code-action" type="button" data-download-code style="right:82px">Download</button><code>${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`);
+        return token;
+      });
+      let html = escapeHtml(source)
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/`([^`]+)`/g, '<code>\$1</code>');
-
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^# (.*)$/gm, '<h3>$1</h3>');
       const lines = html.split('\n');
       let inList = false;
-      return lines.map(line => {
-        if (line.trim().startsWith('* ')) {
-          const content = line.trim().substring(2);
-          const res = (inList ? '' : '<ul>') + `<li>${content}</li>`;
-          inList = true;
-          return res;
-        } else {
-          const res = (inList ? '</ul>' : '') + (line ? `<p>${line}</p>` : '');
-          inList = false;
-          return res;
-        }
+      html = lines.map(line => {
+        if (/^@@CODEBLOCK\d+@@$/.test(line.trim())) return line.trim();
+        if (/^\s*[-*] /.test(line)) { const content = line.replace(/^\s*[-*] /, ''); const out = (inList ? '' : '<ul>') + `<li>${content}</li>`; inList = true; return out; }
+        const out = (inList ? '</ul>' : '') + (line ? `<p>${line}</p>` : ''); inList = false; return out;
       }).join('');
+      if (inList) html += '</ul>';
+      return html.replace(/@@CODEBLOCK(\d+)@@/g, (_, i) => blocks[Number(i)] || '');
     }
 
     function appendMessage(text, sender) {
@@ -1603,12 +1624,19 @@
     const themeSelect = $('ookwa-theme-select');
     const accentInput = $('ookwa-accent');
     const fontSelect = $('ookwa-font-size');
+    const personalitySelect = $('ookwa-personality');
+    const responseLengthSelect = $('ookwa-response-length');
+    const voiceSelect = $('ookwa-voice-select');
+    const voiceRate = $('ookwa-voice-rate');
     const instructionsInput = $('ookwa-instructions');
     const preferencesInput = $('ookwa-preferences');
     function loadOokwaSettings() {
       themeSelect.value = localStorage.getItem('ookwa_theme') || 'red';
       if (accentInput) accentInput.value = localStorage.getItem('ookwa_custom_accent') || '#ef4444';
       fontSelect.value = localStorage.getItem('ookwa_font_scale') || '1';
+      personalitySelect.value = localStorage.getItem('ookwa_personality') || 'balanced';
+      responseLengthSelect.value = localStorage.getItem('ookwa_response_length') || 'concise';
+      voiceRate.value = localStorage.getItem('ookwa_voice_rate') || '1.02';
       instructionsInput.value = localStorage.getItem('ookwa_custom_instructions') || '';
       preferencesInput.value = localStorage.getItem('ookwa_saved_preferences') || '';
       document.documentElement.style.setProperty('--user-accent', accentInput ? accentInput.value : (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444'));
@@ -1623,6 +1651,10 @@
       applyTheme(themeSelect.value);
       if (accentInput) localStorage.setItem('ookwa_custom_accent', accentInput.value);
       localStorage.setItem('ookwa_font_scale', fontSelect.value);
+      localStorage.setItem('ookwa_personality', personalitySelect.value);
+      localStorage.setItem('ookwa_response_length', responseLengthSelect.value);
+      localStorage.setItem('ookwa_voice_rate', voiceRate.value);
+      if (voiceSelect.value) localStorage.setItem('ookwa_voice_name', voiceSelect.value);
       localStorage.setItem('ookwa_custom_instructions', instructionsInput.value.trim());
       localStorage.setItem('ookwa_saved_preferences', preferencesInput.value.trim());
       document.documentElement.style.setProperty('--user-accent', accentInput ? accentInput.value : (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444'));
@@ -1630,6 +1662,16 @@
       settingsPanel.classList.remove('open');
       alert('Your Ookwa preferences have been saved!');
     });
+    function populateVoices() {
+      if (!('speechSynthesis' in window) || !voiceSelect) return;
+      const saved = localStorage.getItem('ookwa_voice_name') || 'auto';
+      const voices = speechSynthesis.getVoices();
+      voiceSelect.innerHTML = '<option value="auto">Automatic voice</option>' + voices.map(v => `<option value="${escapeHtml(v.name)}">${escapeHtml(v.name)} (${escapeHtml(v.lang)})</option>`).join('');
+      voiceSelect.value = [...voiceSelect.options].some(o => o.value === saved) ? saved : 'auto';
+    }
+    if ('speechSynthesis' in window) { populateVoices(); speechSynthesis.onvoiceschanged = populateVoices; }
+    voiceSelect.addEventListener('change', () => localStorage.setItem('ookwa_voice_name', voiceSelect.value));
+    voiceRate.addEventListener('input', () => localStorage.setItem('ookwa_voice_rate', voiceRate.value));
     loadOokwaSettings();
 
     // Export conversation to a text file
@@ -1649,6 +1691,23 @@
     messagesContainer.addEventListener('click', async e => {
       const copyBtn = e.target.closest('[data-copy-answer]');
       const readBtn = e.target.closest('[data-read-answer]');
+      const copyCodeBtn = e.target.closest('[data-copy-code]');
+      const downloadCodeBtn = e.target.closest('[data-download-code]');
+      if (copyCodeBtn || downloadCodeBtn) {
+        const pre = e.target.closest('pre');
+        const code = pre?.querySelector('code')?.innerText || '';
+        if (copyCodeBtn) {
+          try { await navigator.clipboard.writeText(code); copyCodeBtn.textContent = 'Copied'; }
+          catch { alert('Copy is unavailable in this browser context.'); }
+        }
+        if (downloadCodeBtn) {
+          const lang = pre?.dataset.language || 'txt';
+          const ext = ({javascript:'js',js:'js',html:'html',css:'css',python:'py',py:'py',json:'json',typescript:'ts',ts:'ts'})[lang.toLowerCase()] || 'txt';
+          const blob = new Blob([code], {type:'text/plain;charset=utf-8'});
+          const url = URL.createObjectURL(blob); const a = document.createElement('a');
+          a.href = url; a.download = `ookwa-code.${ext}`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+      }
       if (copyBtn) {
         const text = copyBtn.closest('.msg').querySelector('.ai-body')?.innerText || '';
         try { await navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied'; }
@@ -1686,6 +1745,29 @@
         recognition.start();
       });
     }
+
+    // Saved prompts: stored locally in this browser
+    const savedPromptsList = $('saved-prompts-list');
+    function getSavedPrompts() { try { const v = JSON.parse(localStorage.getItem('ookwa_saved_prompts') || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } }
+    function renderSavedPrompts() {
+      const prompts = getSavedPrompts();
+      if (!prompts.length) { savedPromptsList.innerHTML = '<div class="history-empty">Save a useful prompt to reuse it later.</div>'; return; }
+      savedPromptsList.innerHTML = prompts.map((prompt, i) => `<button class="saved-prompt" data-saved-prompt="${i}" title="Click to reuse">${escapeHtml(prompt)}</button>`).join('');
+    }
+    $('save-current-prompt').addEventListener('click', () => {
+      const value = $('user-input').value.trim() || (chatConversation.filter(m => m.role === 'user').slice(-1)[0]?.content || '');
+      if (!value) { alert('Type a prompt or send a message first.'); return; }
+      const prompts = getSavedPrompts();
+      if (!prompts.includes(value)) prompts.unshift(value);
+      localStorage.setItem('ookwa_saved_prompts', JSON.stringify(prompts.slice(0,12)));
+      renderSavedPrompts();
+    });
+    savedPromptsList.addEventListener('click', e => {
+      const btn = e.target.closest('[data-saved-prompt]'); if (!btn) return;
+      const prompt = getSavedPrompts()[Number(btn.dataset.savedPrompt)]; if (!prompt) return;
+      $('user-input').value = prompt; $('user-input').focus();
+    });
+    renderSavedPrompts();
 
     // Attach text and supported documents; images are added as text-only metadata unless model supports image input.
     $('ookwa-attach-btn').addEventListener('click', () => $('ookwa-file-input').click());
