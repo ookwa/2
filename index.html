@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#09090b">
   <meta name="description" content="Meet Ookwa, your personal AI assistant.">
-  <!-- Ookwa browser-tab logo (favicon) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23fb7185'/%3E%3Cstop offset='1' stop-color='%23b91c1c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230b090b'/%3E%3Crect x='3' y='3' width='58' height='58' rx='14' fill='url(%23g)'/%3E%3Cpath d='M20 24h24v16a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z' fill='white'/%3E%3Cpath d='M20 29h-4v7a5 5 0 0 0 5 5M44 29h4v7a5 5 0 0 1-5 5' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M26 31v7m12-7v7' stroke='%23c02635' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-  <meta name="apple-mobile-web-app-title" content="Ookwa">
   <title>Ookwa 1.0 — AI Assistant</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1006,6 +1003,26 @@
       .tts-btn, .attract-btn, .send-btn { height: 39px; border-radius: 10px; }
       .input-hint { font-size: .6rem; margin-top: 8px; }
     }
+
+    /* Ookwa personalization + tools */
+    :root { --user-accent: #ef4444; --user-font-scale: 1; }
+    .chat-area { font-size: calc(1rem * var(--user-font-scale)); }
+    .ai-tools { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+    .ai-tools button,.ookwa-tool-btn { border:1px solid var(--border); color:var(--muted); background:var(--surface-2); border-radius:8px; padding:5px 8px; cursor:pointer; font-size:11px; }
+    .ai-tools button:hover,.ookwa-tool-btn:hover { color:var(--text); border-color:var(--user-accent); }
+    .ookwa-tools { position:fixed; right:18px; bottom:78px; z-index:1000; display:flex; gap:6px; }
+    .ookwa-tool-btn.primary { background:var(--user-accent); color:white; border-color:transparent; }
+    .ookwa-panel { position:fixed; right:18px; bottom:124px; width:min(310px,calc(100vw - 28px)); max-height:68vh; overflow:auto; z-index:1001; padding:12px; border:1px solid var(--border); border-radius:16px; background:var(--bg); color:var(--text); box-shadow:var(--shadow); display:none; }
+    .ookwa-panel.open { display:block; }
+    .ookwa-panel h2 { font-size:14px; margin:0 0 9px; }
+    .ookwa-panel label { display:block; color:var(--muted); font-size:10px; margin:8px 0 4px; }
+    .ookwa-panel input,.ookwa-panel select,.ookwa-panel textarea { width:100%; box-sizing:border-box; border:1px solid var(--border); border-radius:7px; background:var(--surface-2); color:var(--text); padding:6px 8px; font-size:11px; }
+    .ookwa-panel textarea { min-height:54px; resize:vertical; font-size:11px; }
+    .ookwa-panel .panel-actions { display:flex; gap:6px; margin-top:9px; }
+    .ookwa-panel .panel-actions button { flex:1; border:0; border-radius:7px; padding:7px; cursor:pointer; background:var(--user-accent); color:white; font-size:11px; }
+    .file-chip { font-size:12px; color:var(--muted); padding:4px 8px; }
+    .voice-active { outline:2px solid var(--user-accent); }
+
   </style>
 </head>
 
@@ -1057,17 +1074,6 @@
 
       <div class="topbar-actions">
         <a class="rate-page-link" href="rating.html" aria-label="Open website rating page">★ Rate website</a>
-        <!-- COLOR THEME SELECTOR -->
-        <div class="theme-picker-wrapper" title="Select UI Color Theme">
-          <div class="theme-dot active" data-set="red" title="Red Theme"></div>
-          <div class="theme-dot" data-set="blue" title="Blue Theme"></div>
-          <div class="theme-dot" data-set="purple" title="Purple Theme"></div>
-          <div class="theme-dot" data-set="green" title="Green Theme"></div>
-          <div class="theme-dot" data-set="cyan" title="Cyan Theme"></div>
-          <div class="theme-dot" data-set="black" title="Black Theme"></div>
-          <div class="theme-dot" data-set="white" title="White Theme"></div>
-        </div>
-
         <div class="topbar-right">
           <span class="status-dot"></span>
           <span>Personal AI assistant</span>
@@ -1165,6 +1171,8 @@
         <div class="input-shell">
           <div class="chat-input-area">
             <textarea id="user-input" placeholder="Message Ookwa..." rows="1"></textarea>
+            <input id="ookwa-file-input" type="file" accept="image/*,.txt,.md,.csv,.json,.html,.css,.js,.py,.pdf" multiple hidden>
+            <button class="attract-btn" id="ookwa-attach-btn" type="button" title="Attach files">＋ File</button>
             <button class="attract-btn" id="attract-btn" title="Toggle particle magnetism">⊕ Flee Cursor</button>
             <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇 Voice</button>
             <button class="send-btn" id="send-btn" aria-label="Send message">➤</button>
@@ -1181,6 +1189,10 @@
         <div class="history-list" id="history-list">
           <div class="history-empty">Your recent questions will appear here.</div>
         </div>
+        <div class="ookwa-tools" style="position:static;margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;">
+          <button class="ookwa-tool-btn" id="ookwa-download-btn" title="Download this conversation">↓ Export</button>
+          <button class="ookwa-tool-btn primary" id="ookwa-settings-btn" aria-expanded="false">⚙ Personalize</button>
+        </div>
         <div class="side-note">
           <strong>Made for curiosity.</strong>
           Explore ideas, ask questions, and keep building something great.
@@ -1189,8 +1201,19 @@
     </main>
   </div>
 
+  <section class="ookwa-panel" id="ookwa-settings-panel" aria-label="Personalization settings">
+    <h2>Personalize Ookwa</h2>
+    <label for="ookwa-theme-select">Theme</label>
+    <select id="ookwa-theme-select"><option value="red">Red</option><option value="blue">Blue</option><option value="purple">Purple</option><option value="black">Midnight</option><option value="white">Light</option><option value="green">Green</option><option value="cyan">Cyan</option></select>
+    <label for="ookwa-font-size">Chat text size</label><select id="ookwa-font-size"><option value="0.9">Small</option><option value="1">Default</option><option value="1.12">Large</option><option value="1.25">Extra large</option></select>
+    <label for="ookwa-instructions">Custom AI instructions</label><textarea id="ookwa-instructions" placeholder="Example: Explain things simply and keep answers concise."></textarea>
+    <label for="ookwa-preferences">Saved preferences</label><textarea id="ookwa-preferences" placeholder="Things Ookwa should keep in mind for your chats."></textarea>
+    <div class="panel-actions"><button id="ookwa-save-settings">Save settings</button><button id="ookwa-close-settings" type="button">Close</button></div>
+    <p style="font-size:11px;color:var(--muted);line-height:1.5">Settings are saved in this browser. Attachments are read locally; image understanding depends on the connected AI model.</p>
+  </section>
+
   <script>
-    const OPENROUTER_API_KEY = "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";
+    const OPENROUTER_API_KEY = "YOUR_KEY_MUST_STAY_ON_A_SECURE_BACKEND";
     const OPENROUTER_MODEL = "openai/gpt-4o-mini";
 
     let userName = localStorage.getItem('ookwa_user_name') || '';
@@ -1420,7 +1443,7 @@
           body: JSON.stringify({
             model: OPENROUTER_MODEL,
             messages: [
-              { role: 'system', content: `You are Ookwa 1.0, a highly capable personal AI assistant created for \${userName || 'the user'}. Be concise, intelligent, encouraging, and clear.` },
+              { role: 'system', content: `You are Ookwa 1.0, a highly capable personal AI assistant created for ${userName || 'the user'}. Be concise, intelligent, encouraging, and clear.\nCustom instructions: ${localStorage.getItem('ookwa_custom_instructions') || 'None provided.'}\nSaved user preferences: ${localStorage.getItem('ookwa_saved_preferences') || 'None provided.'}` },
               ...chatConversation
             ]
           })
@@ -1573,6 +1596,117 @@
         window.location.href = `rating.html?rating=${val}`;
       };
     });
+
+    // Personalization controls
+    const $ = id => document.getElementById(id);
+    const settingsPanel = $('ookwa-settings-panel');
+    const themeSelect = $('ookwa-theme-select');
+    const accentInput = $('ookwa-accent');
+    const fontSelect = $('ookwa-font-size');
+    const instructionsInput = $('ookwa-instructions');
+    const preferencesInput = $('ookwa-preferences');
+    function loadOokwaSettings() {
+      themeSelect.value = localStorage.getItem('ookwa_theme') || 'red';
+      if (accentInput) accentInput.value = localStorage.getItem('ookwa_custom_accent') || '#ef4444';
+      fontSelect.value = localStorage.getItem('ookwa_font_scale') || '1';
+      instructionsInput.value = localStorage.getItem('ookwa_custom_instructions') || '';
+      preferencesInput.value = localStorage.getItem('ookwa_saved_preferences') || '';
+      document.documentElement.style.setProperty('--user-accent', accentInput ? accentInput.value : (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444'));
+      document.documentElement.style.setProperty('--user-font-scale', fontSelect.value);
+    }
+    $('ookwa-settings-btn').addEventListener('click', () => {
+      settingsPanel.classList.toggle('open');
+      $('ookwa-settings-btn').setAttribute('aria-expanded', settingsPanel.classList.contains('open'));
+    });
+    $('ookwa-close-settings').addEventListener('click', () => settingsPanel.classList.remove('open'));
+    $('ookwa-save-settings').addEventListener('click', () => {
+      applyTheme(themeSelect.value);
+      if (accentInput) localStorage.setItem('ookwa_custom_accent', accentInput.value);
+      localStorage.setItem('ookwa_font_scale', fontSelect.value);
+      localStorage.setItem('ookwa_custom_instructions', instructionsInput.value.trim());
+      localStorage.setItem('ookwa_saved_preferences', preferencesInput.value.trim());
+      document.documentElement.style.setProperty('--user-accent', accentInput ? accentInput.value : (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444'));
+      document.documentElement.style.setProperty('--user-font-scale', fontSelect.value);
+      settingsPanel.classList.remove('open');
+      alert('Your Ookwa preferences have been saved!');
+    });
+    loadOokwaSettings();
+
+    // Export conversation to a text file
+    $('ookwa-download-btn').addEventListener('click', () => {
+      const lines = [...document.querySelectorAll('#messages .msg')].map(el => {
+        const who = el.classList.contains('user') ? (userName || 'You') : 'Ookwa';
+        return `${who}: ${el.innerText.replace(/^OOKWA\s*/, '').trim()}`;
+      });
+      if (!lines.length) { alert('There are no messages to export yet.'); return; }
+      const blob = new Blob([`Ookwa conversation\n\n${lines.join('\n\n')}`], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob); const a = document.createElement('a');
+      a.href = url; a.download = `ookwa-chat-${new Date().toISOString().slice(0,10)}.txt`; a.click(); URL.revokeObjectURL(url);
+    });
+
+    // Copy answer controls and read-aloud button
+    const messagesContainer = $('messages');
+    messagesContainer.addEventListener('click', async e => {
+      const copyBtn = e.target.closest('[data-copy-answer]');
+      const readBtn = e.target.closest('[data-read-answer]');
+      if (copyBtn) {
+        const text = copyBtn.closest('.msg').querySelector('.ai-body')?.innerText || '';
+        try { await navigator.clipboard.writeText(text); copyBtn.textContent = '✓ Copied'; }
+        catch { alert('Copy is unavailable in this browser context.'); }
+      }
+      if (readBtn) {
+        const text = readBtn.closest('.msg').querySelector('.ai-body')?.innerText || '';
+        if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
+      }
+    });
+    const originalAppendMessage = appendMessage;
+    appendMessage = function(text, sender) {
+      originalAppendMessage(text, sender);
+      if (sender === 'ai') {
+        const last = messagesContainer.lastElementChild;
+        if (last && !last.querySelector('[data-copy-answer]')) {
+          const tools = document.createElement('div'); tools.className = 'ai-tools';
+          tools.innerHTML = '<button type="button" data-copy-answer>Copy answer</button><button type="button" data-read-answer>Read aloud</button>';
+          last.appendChild(tools);
+        }
+      }
+    };
+
+    // Microphone dictation (browser support varies)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const voiceBtn = $('tts-btn');
+    if (voiceBtn && SpeechRecognition) {
+      voiceBtn.title = 'Click to dictate a message';
+      voiceBtn.addEventListener('dblclick', () => {
+        const recognition = new SpeechRecognition(); recognition.lang = navigator.language || 'en-US'; recognition.interimResults = false;
+        voiceBtn.classList.add('voice-active'); voiceBtn.textContent = '🎙 Listening';
+        recognition.onresult = e => { $('user-input').value += ( $('user-input').value ? ' ' : '' ) + e.results[0][0].transcript; };
+        recognition.onerror = () => {};
+        recognition.onend = () => { voiceBtn.classList.remove('voice-active'); voiceBtn.textContent = '🔇 Voice'; };
+        recognition.start();
+      });
+    }
+
+    // Attach text and supported documents; images are added as text-only metadata unless model supports image input.
+    $('ookwa-attach-btn').addEventListener('click', () => $('ookwa-file-input').click());
+    $('ookwa-file-input').addEventListener('change', async e => {
+      const files = [...e.target.files]; if (!files.length) return;
+      const parts = [];
+      for (const file of files) {
+        if (file.size > 2 * 1024 * 1024) { parts.push(`[${file.name}: too large; max 2 MB]`); continue; }
+        if (file.type.startsWith('text/') || /\.(txt|md|csv|json|html|css|js|py)$/i.test(file.name)) {
+          parts.push(`\n--- File: ${file.name} ---\n${(await file.text()).slice(0,30000)}\n--- End file ---`);
+        } else if (file.type.startsWith('image/')) {
+          parts.push(`[Attached image: ${file.name}. This version does not send image pixels to the AI yet; describe the image in your message.]`);
+        } else {
+          parts.push(`[File: ${file.name} (${file.type || 'unknown type'}). Text extraction for this file type is not enabled yet.]`);
+        }
+      }
+      $('user-input').value += ($('user-input').value ? '\n\n' : '') + parts.join('\n\n');
+      e.target.value = '';
+      $('user-input').focus();
+    });
+
   </script>
 </body>
 </html>
