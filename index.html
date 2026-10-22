@@ -1003,6 +1003,67 @@
       .tts-btn, .attract-btn, .send-btn { height: 39px; border-radius: 10px; }
       .input-hint { font-size: .6rem; margin-top: 8px; }
     }
+
+    /* COMPACT UI + EXTRA QUALITY-OF-LIFE FEATURES */
+    .utility-btn {
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      border-radius: 9px; padding: 7px 9px; font-size: .7rem; font-weight: 700;
+      white-space: nowrap; cursor: pointer; transition: .18s ease;
+    }
+    .utility-btn:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+    .heading-tools { display:flex; align-items:center; gap:7px; }
+    .live-pulse { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 9px var(--green); margin-right:5px; }
+    .chat-heading { padding: 13px 22px !important; }
+    .chat-heading h1 { font-size: 1rem !important; }
+    .chat-heading p { margin-top: 3px !important; font-size:.7rem !important; }
+    .topbar { height: 54px !important; padding: 0 16px !important; }
+    .topbar-logo-mark { width:31px !important; height:31px !important; border-radius:10px !important; }
+    .topbar-logo { font-size:.96rem !important; }
+    .topbar-actions { gap:7px !important; }
+    .main { min-height:0; }
+    .sidebar-left, .sidebar-right { padding: 15px !important; }
+    .user-profile-box { padding: 10px !important; }
+    .rating-box, .contact-card { padding: 12px !important; }
+    .welcome { padding: 18px 10px !important; }
+    .welcome-icon { width:44px !important; height:44px !important; margin-bottom:12px !important; border-radius:14px !important; }
+    .welcome-icon svg { width:22px !important; height:22px !important; }
+    .welcome h2 { font-size: clamp(1.25rem,2.5vw,1.7rem) !important; }
+    .welcome > p { margin:8px auto 16px !important; line-height:1.5 !important; }
+    .suggestions { gap:7px !important; }
+    .suggestion { padding:10px !important; }
+    .input-shell { padding: 8px 16px 10px !important; }
+    .chat-input-area textarea { min-height:34px !important; padding:7px 9px !important; }
+    .input-hint { margin-top:5px !important; font-size:.62rem !important; }
+    .msg { padding: 11px 13px !important; margin-bottom:10px !important; font-size:.83rem !important; }
+    .msg-tools { display:flex; justify-content:flex-end; margin-top:7px; }
+    .copy-reply { border:1px solid var(--border); background:transparent; color:var(--muted); border-radius:7px; padding:4px 7px; cursor:pointer; font-size:.65rem; }
+    .copy-reply:hover { color:var(--text); border-color:var(--border-hover); }
+    body.compact-ui .sidebar-left, body.compact-ui .sidebar-right { padding:10px !important; }
+    body.compact-ui .topbar { height:46px !important; }
+    body.compact-ui .topbar-logo-mark { width:26px !important; height:26px !important; }
+    body.compact-ui .chat-heading { padding:9px 16px !important; }
+    body.compact-ui .input-shell { padding:5px 12px 7px !important; }
+    body.compact-ui .welcome { padding:8px !important; }
+    body.compact-ui .welcome-icon { display:none !important; }
+    body.focus-mode .sidebar-left, body.focus-mode .sidebar-right { display:none !important; }
+    body.focus-mode .main { grid-template-columns: minmax(0,1fr) !important; }
+    body.focus-mode .chat-area { width:100%; }
+    @media (max-width: 1050px) {
+      .topbar-right { display:none !important; }
+      .heading-tools { gap:4px; }
+      .heading-pill { display:none !important; }
+    }
+    @media (max-width: 650px) {
+      .topbar { padding:0 9px !important; }
+      .topbar-actions { gap:4px !important; }
+      .utility-btn { padding:6px 7px; font-size:.64rem; }
+      .theme-picker-wrapper { gap:3px !important; padding:3px 5px !important; }
+      .theme-dot { width:12px !important; height:12px !important; }
+      .rate-page-link { padding:7px 8px !important; }
+      .heading-tools #random-prompt { display:none; }
+      .chat-heading { padding:10px 12px !important; }
+    }
+
   </style>
 </head>
 
@@ -1053,7 +1114,9 @@
       </div>
 
       <div class="topbar-actions">
-        <a class="rate-page-link" href="rating.html" aria-label="Open website rating page">★ Rate website</a>
+        <button class="utility-btn" id="compact-toggle" title="Toggle compact layout (Ctrl+Shift+M)">↕ Compact</button>
+        <button class="utility-btn" id="export-chat" title="Export this chat (Ctrl+Shift+E)">⇩ Export</button>
+        <a class="rate-page-link" href="rating.html" aria-label="Open website rating page">★ Rate</a>
         <!-- COLOR THEME SELECTOR -->
         <div class="theme-picker-wrapper" title="Select UI Color Theme">
           <div class="theme-dot active" data-set="red" title="Red Theme"></div>
@@ -1120,7 +1183,11 @@
             <h1>Chat with Ookwa</h1>
             <p>Your ideas start here.</p>
           </div>
-          <div class="heading-pill">● Live OpenRouter Connected</div>
+          <div class="heading-tools">
+            <button class="utility-btn" id="random-prompt" title="Get a random idea">✦ Surprise me</button>
+            <button class="utility-btn" id="focus-toggle" title="Hide sidebars for distraction-free chat">⛶ Focus</button>
+            <div class="heading-pill"><span class="live-pulse"></span> AI assistant</div>
+          </div>
         </div>
 
         <div class="chat-messages" id="messages">
@@ -1187,7 +1254,7 @@
   </div>
 
   <script>
-    const OPENROUTER_API_KEY = "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";
+    const OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY"; // Do not publish a real API key in client-side HTML.
     const OPENROUTER_MODEL = "openai/gpt-4o-mini";
 
     let userName = localStorage.getItem('ookwa_user_name') || '';
@@ -1435,7 +1502,7 @@
 
       } catch (err) {
         console.error('OpenRouter AI Error:', err);
-        return "I'm having trouble connecting to my cloud network right now. Please check your internet connection, run this file through a local web server (like Live Server), or check your browser console for details.";
+        return OPENROUTER_API_KEY === "YOUR_OPENROUTER_API_KEY" ? "Ookwa’s AI key has not been configured yet. Add your OpenRouter key through a secure backend rather than putting a real key in public HTML." : "I'm having trouble connecting to my cloud network right now. Please check your internet connection, run this file through a local web server (like Live Server), or check your browser console for details.";
       }
     }
 
@@ -1468,7 +1535,11 @@
       msgDiv.className = `msg ${sender}`;
 
       if (sender === 'ai') {
-        msgDiv.innerHTML = `<div class="ai-label">OOKWA</div><div class="ai-body">${parseMarkdown(text)}</div>`;
+        msgDiv.innerHTML = `<div class="ai-label">OOKWA</div><div class="ai-body">${parseMarkdown(text)}</div><div class="msg-tools"><button class="copy-reply" type="button">Copy response</button></div>`;
+        msgDiv.querySelector('.copy-reply').onclick = async () => {
+          try { await navigator.clipboard.writeText(text); msgDiv.querySelector('.copy-reply').textContent = 'Copied!'; }
+          catch (e) { msgDiv.querySelector('.copy-reply').textContent = 'Copy unavailable'; }
+        };
         speakText(text);
       } else {
         msgDiv.textContent = text;
@@ -1570,6 +1641,67 @@
         window.location.href = `rating.html?rating=${val}`;
       };
     });
+
+    // Small extras: compact mode, focus mode, random prompts, export and shortcuts.
+    const compactToggle = document.getElementById('compact-toggle');
+    const focusToggle = document.getElementById('focus-toggle');
+    const exportChatBtn = document.getElementById('export-chat');
+    const randomPromptBtn = document.getElementById('random-prompt');
+    const randomPrompts = [
+      'Give me a unique website idea I could build in one HTML file.',
+      'Teach me one useful JavaScript trick with an example.',
+      'Come up with a cool Minecraft SMP event for players.',
+      'Give me a creative challenge for today.',
+      'Help me improve a project and make it look more professional.',
+      'Explain a fascinating science fact in simple words.',
+      'Write a short mystery story with an unexpected ending.',
+      'Give me 5 useful Discord server features to add.'
+    ];
+    try {
+      if (localStorage.getItem('ookwa_compact') === '1') document.body.classList.add('compact-ui');
+      if (localStorage.getItem('ookwa_focus') === '1') document.body.classList.add('focus-mode');
+    } catch (e) {}
+    function updateUtilityLabels() {
+      compactToggle.textContent = document.body.classList.contains('compact-ui') ? '↕ Cozy' : '↕ Compact';
+      focusToggle.textContent = document.body.classList.contains('focus-mode') ? '⊞ Show panels' : '⛶ Focus';
+    }
+    compactToggle.onclick = () => {
+      document.body.classList.toggle('compact-ui');
+      try { localStorage.setItem('ookwa_compact', document.body.classList.contains('compact-ui') ? '1' : '0'); } catch (e) {}
+      updateUtilityLabels();
+    };
+    focusToggle.onclick = () => {
+      document.body.classList.toggle('focus-mode');
+      try { localStorage.setItem('ookwa_focus', document.body.classList.contains('focus-mode') ? '1' : '0'); } catch (e) {}
+      updateUtilityLabels();
+    };
+    randomPromptBtn.onclick = () => {
+      const prompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
+      userInput.value = prompt;
+      userInput.focus();
+      userInput.style.height = 'auto';
+      userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+    };
+    exportChatBtn.onclick = () => {
+      const lines = ['Ookwa 1.0 — Chat Export', new Date().toLocaleString(), ''];
+      document.querySelectorAll('#messages .msg').forEach(msg => {
+        if (msg.classList.contains('user')) lines.push('YOU: ' + msg.textContent.trim(), '');
+        else if (msg.classList.contains('ai')) lines.push('OOKWA: ' + (msg.querySelector('.ai-body')?.innerText || '').trim(), '');
+      });
+      if (lines.length <= 3) lines.push('No messages to export yet.');
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'ookwa-chat.txt'; a.click();
+      URL.revokeObjectURL(url);
+    };
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); userInput.focus(); }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'm') { e.preventDefault(); compactToggle.click(); }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'e') { e.preventDefault(); exportChatBtn.click(); }
+      if (e.key === 'Escape') { document.body.classList.remove('focus-mode'); updateUtilityLabels(); }
+    });
+    updateUtilityLabels();
+
   </script>
 </body>
 </html>
