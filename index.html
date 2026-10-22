@@ -56,7 +56,6 @@ button{-webkit-tap-highlight-color:transparent}
 .modal-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
 
 #app{position:relative;z-index:2;height:100%;display:flex;flex-direction:column}
-.topbar,.sidebar-left,.sidebar-right{background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .topbar{height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--border)}
 .topbar-brand,.topbar-actions{display:flex;align-items:center;gap:10px}
 .topbar-logo-mark{width:30px;height:30px;border-radius:10px;background:linear-gradient(145deg,var(--accent-grad-1),var(--accent-grad-2));display:grid;place-items:center;box-shadow:inset 0 1px rgba(255,255,255,.22)}
@@ -69,40 +68,10 @@ button{-webkit-tap-highlight-color:transparent}
 .theme-dot{width:14px;height:14px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s}
 .theme-dot:hover,.theme-dot.active{transform:scale(1.2);border-color:var(--text)}
 .theme-dot[data-set=red]{background:#ef4444}.theme-dot[data-set=blue]{background:#3b82f6}.theme-dot[data-set=purple]{background:#a855f7}.theme-dot[data-set=green]{background:#22c55e}.theme-dot[data-set=cyan]{background:#06b6d4}.theme-dot[data-set=black]{background:#18181b}.theme-dot[data-set=white]{background:#f8fafc;border:1px solid #ccc}
-.topbar-right{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--muted)}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
 
-.main{flex:1;display:grid;grid-template-columns:176px minmax(0,1fr) 190px;overflow:hidden;min-height:0;margin:8px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);background:var(--surface)}
-.sidebar-left,.sidebar-right{padding:12px 10px;overflow-y:auto;min-width:0;display:flex;flex-direction:column}
-.sidebar-left{border-right:1px solid var(--border);gap:12px}
-.sidebar-right{border-left:1px solid var(--border)}
-.sidebar-title{font-size:.62rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
-.user-profile-box,.rating-box,.contact-card{background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:10px}
-.user-profile-box{display:flex;align-items:center;gap:8px}
 .user-avatar{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-grad-1),var(--accent-grad-2));display:grid;place-items:center;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0}
-.user-info{flex:1;min-width:0}
-.user-name{font-size:.74rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-status{font-size:.62rem;color:var(--muted)}
-.change-name-btn{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.66rem;padding:3px 5px;border-radius:5px}
-.change-name-btn:hover{color:var(--accent-2);background:rgba(255,255,255,.05)}
-.rating-box h3,.contact-card h3{font-size:.76rem;margin-bottom:6px}
-.stars{display:flex;gap:3px}
-.star{font-size:1.1rem;cursor:pointer;color:#555;transition:color .15s,transform .15s;user-select:none}
-.star:hover,.star.active{color:#fbbf24;transform:translateY(-2px)}
-.rating-avg{margin-top:5px;font-size:.62rem;color:var(--muted);line-height:1.4}
-.rating-avg strong{color:#fbbf24}
-.contact-card{margin-top:auto}
-.contact-item{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;font-size:.68rem}
-.contact-item:last-child{margin-bottom:0}
-.contact-item label{color:var(--muted);font-size:.62rem}
-.contact-item a,.contact-item span{color:var(--text);text-decoration:none;overflow-wrap:anywhere}
-.contact-item a:hover{color:var(--accent-2)}
 
 .chat-area{display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.chat-heading{padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border)}
-.chat-heading h1{font-size:.84rem;font-weight:700;letter-spacing:-.2px}
-.chat-heading p{color:var(--muted);font-size:.66rem;margin-top:1px}
-.heading-pill{border:1px solid rgba(74,222,128,.2);background:rgba(74,222,128,.08);color:var(--green);border-radius:7px;padding:4px 8px;font-size:.62rem;white-space:nowrap}
 .chat-messages{flex:1;overflow-y:auto;padding:14px clamp(10px,2.5vw,24px);display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
 .msg{max-width:min(88%,640px);padding:8px 12px;border-radius:12px;font-size:.82rem;line-height:1.55;overflow-wrap:anywhere;animation:fadeIn .2s both}
 .msg.user{align-self:flex-end;color:#fff;background:linear-gradient(135deg,var(--user-msg-grad-1),var(--user-msg-grad-2));border:1px solid rgba(255,255,255,.15);border-bottom-right-radius:4px}
@@ -114,8 +83,6 @@ button{-webkit-tap-highlight-color:transparent}
 .ai-body ul{margin:4px 0 4px 16px}
 
 .welcome{margin:auto;width:min(100%,420px);padding:14px 8px;text-align:center;animation:fadeIn .4s both}
-.welcome-icon{width:42px;height:42px;margin:0 auto 10px;display:grid;place-items:center;border-radius:14px;background:var(--surface-2);border:1px solid var(--border)}
-.welcome-icon svg{width:22px;height:22px;stroke:var(--accent-2)}
 .welcome h2{font-size:clamp(1.2rem,2.5vw,1.55rem);letter-spacing:-.9px;font-weight:800;line-height:1.2}
 .welcome h2 span{background:linear-gradient(100deg,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
 .welcome>p{max-width:320px;margin:6px auto 14px;color:var(--muted);font-size:.76rem;line-height:1.5}
@@ -145,31 +112,56 @@ button{-webkit-tap-highlight-color:transparent}
 .tts-btn.on,.attract-btn.on{border-color:var(--accent);color:var(--accent-2)}
 .send-btn{width:34px;padding:0;border:1px solid rgba(255,255,255,.12);background:linear-gradient(145deg,var(--accent-grad-1),var(--accent-grad-2));color:#fff;font-size:.95rem}
 .send-btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
-.input-hint{text-align:center;color:var(--muted);font-size:.6rem;margin-top:5px}
 
-.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.history-header .sidebar-title{margin:0}
 .clear-history{font-size:.64rem;color:var(--muted);background:none;border:0;border-radius:5px;padding:3px 6px;cursor:pointer}
 .clear-history:hover{color:var(--accent-2);background:rgba(255,255,255,.05)}
 .history-list{display:flex;flex-direction:column;gap:5px}
 .history-item{padding:7px 9px;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:.7rem;transition:border-color .2s}
 .history-item:hover{border-color:var(--border-hover)}
 .history-item .q{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.history-item .time{font-size:.58rem;color:var(--muted);margin-top:2px}
 .history-empty{color:var(--muted);font-size:.7rem;text-align:center;margin-top:14px;line-height:1.5}
 
-@media(max-width:1000px){.main{grid-template-columns:168px minmax(0,1fr)}.sidebar-right{display:none}}
-@media(max-width:700px){
-.topbar{height:44px;padding:0 10px}
-.topbar-right,.sidebar-left{display:none}
-.main{display:flex;flex-direction:column;margin:6px;border-radius:12px}
-.chat-messages{padding:12px 10px}
-.msg{max-width:94%}
-.typing{margin-left:10px}
-.input-shell{padding:6px 6px 8px}
-.input-hint{display:none}
-}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.topbar{height:38px;padding:0 10px;background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.topbar-brand,.topbar-actions{gap:7px}
+.topbar-logo-mark{width:22px;height:22px;border-radius:7px}
+.topbar-logo-mark svg{width:13px;height:13px}
+.topbar-logo{font-size:.86rem}
+.topbar-logo span{font-size:.56rem;padding:1px 4px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.user-chip{display:flex;align-items:center;gap:5px;max-width:120px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:2px 8px 2px 2px;color:var(--text);font-size:.68rem;font-weight:600;cursor:pointer}
+.user-chip:hover{border-color:var(--border-hover)}
+#display-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-avatar{width:18px;height:18px;border-radius:5px;font-size:.62rem}
+.theme-picker-wrapper{gap:4px;padding:3px 6px;border-radius:7px}
+.theme-dot{width:11px;height:11px}
+.rate-page-link{padding:3px 8px;font-size:.64rem;border-radius:7px}
+.main{flex:1;display:flex;min-height:0;background:var(--surface)}
+.chat-area{flex:1}
+.chat-messages{padding:8px 12px;gap:6px}
+.msg{padding:5px 10px;font-size:.78rem;line-height:1.45;border-radius:10px;max-width:min(92%,720px)}
+.ai-label{font-size:.54rem;margin-bottom:1px}
+.ai-body p+p{margin-top:3px}
+.welcome{padding:4px;width:min(100%,380px)}
+.welcome h2{font-size:1.05rem;letter-spacing:-.5px}
+.welcome>p{margin:3px auto 8px;font-size:.7rem;line-height:1.4}
+.suggestions{gap:5px}
+.suggestion{padding:5px 9px;border-radius:8px}
+.suggestion strong{font-size:.68rem;margin:0}
+.suggestion span{display:none}
+.history-bar{display:flex;align-items:center;gap:6px;padding:3px 10px 0}
+.history-bar:has(.history-empty){display:none}
+.history-list{flex:1;flex-direction:row;overflow-x:auto;gap:4px;scrollbar-width:none}
+.history-item{flex:0 0 auto;max-width:160px;padding:2px 9px;border-radius:99px;font-size:.62rem}
+.clear-history{font-size:.6rem;padding:2px 5px}
+.typing{margin:0 12px 3px;padding:4px 9px;border-radius:9px}
+.input-shell{padding:4px 8px 6px;border-top:0}
+.chat-input-area{padding:3px;gap:3px;border-radius:10px}
+.chat-input-area textarea{padding:5px 8px;min-height:28px;font-size:.8rem;line-height:1.4}
+.tts-btn,.attract-btn,.send-btn{height:28px;border-radius:7px;padding:0 8px;font-size:.72rem}
+.send-btn{width:28px;padding:0;font-size:.8rem}
+@media(max-width:700px){.topbar{height:36px;padding:0 8px}.topbar-logo,.theme-picker-wrapper{display:none}.chat-messages{padding:6px 8px}.msg{max-width:96%}.input-shell{padding:3px 6px 5px}}
 </style>
 </head>
 <body>
@@ -196,94 +188,44 @@ button{-webkit-tap-highlight-color:transparent}
 <div id="app">
   <header class="topbar">
     <div class="topbar-brand">
-      <div class="topbar-logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="3.5" fill="white"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity=".7"/></svg>
-      </div>
+      <div class="topbar-logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="3.5" fill="white"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity=".7"/></svg></div>
       <div class="topbar-logo">Ookwa <span>1.0</span></div>
+      <span class="status-dot" title="Live OpenRouter connected"></span>
     </div>
     <div class="topbar-actions">
-      <a class="rate-page-link" href="rating.html" aria-label="Open website rating page">★ Rate website</a>
+      <button class="user-chip" id="change-name-btn" title="Change name"><span class="user-avatar" id="user-avatar">?</span><span id="display-name">Friend</span></button>
       <div class="theme-picker-wrapper" title="Select UI color theme">
-        <div class="theme-dot active" data-set="red" title="Red"></div>
-        <div class="theme-dot" data-set="blue" title="Blue"></div>
-        <div class="theme-dot" data-set="purple" title="Purple"></div>
-        <div class="theme-dot" data-set="green" title="Green"></div>
-        <div class="theme-dot" data-set="cyan" title="Cyan"></div>
-        <div class="theme-dot" data-set="black" title="Black"></div>
-        <div class="theme-dot" data-set="white" title="White"></div>
+        <div class="theme-dot active" data-set="red" title="Red"></div><div class="theme-dot" data-set="blue" title="Blue"></div><div class="theme-dot" data-set="purple" title="Purple"></div><div class="theme-dot" data-set="green" title="Green"></div><div class="theme-dot" data-set="cyan" title="Cyan"></div><div class="theme-dot" data-set="black" title="Black"></div><div class="theme-dot" data-set="white" title="White"></div>
       </div>
-      <div class="topbar-right"><span class="status-dot"></span><span>Personal AI assistant</span></div>
+      <a class="rate-page-link" href="rating.html" aria-label="Rate this website">★ Rate</a>
+      <a class="rate-page-link" href="mailto:kypton335@gmail.com" title="kypton335@gmail.com · Discord @oowa" aria-label="Email">✉</a>
     </div>
   </header>
-
   <main class="main">
-    <aside class="sidebar-left">
-      <div class="user-profile-box">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <div class="user-info">
-          <div class="user-name" id="display-name">Friend</div>
-          <div class="user-status">Active User</div>
-        </div>
-        <button class="change-name-btn" id="change-name-btn" title="Change name">Edit</button>
-      </div>
-
-      <section class="rating-box">
-        <h3>Enjoying Ookwa?</h3>
-        <div class="stars" id="stars">
-          <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
-        </div>
-        <div class="rating-avg" id="rating-avg"></div>
-      </section>
-
-      <section class="contact-card">
-        <h3>Get in touch</h3>
-        <div class="contact-item"><label>Email</label><a href="mailto:kypton335@gmail.com">kypton335@gmail.com</a></div>
-        <div class="contact-item"><label>Discord</label><span>@oowa</span></div>
-      </section>
-    </aside>
-
     <section class="chat-area">
-      <div class="chat-heading">
-        <div><h1>Chat with Ookwa</h1><p>Your ideas start here.</p></div>
-        <div class="heading-pill">● Live OpenRouter Connected</div>
-      </div>
-
       <div class="chat-messages" id="messages">
         <div class="welcome" id="welcome">
-          <div class="welcome-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/><path d="M19 14l1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14z"/></svg>
-          </div>
           <h2>What can we <span id="welcome-name-span">figure out?</span></h2>
           <p>Ask a question, explore an idea, get help with code, or work through a problem.</p>
           <div class="suggestions">
-            <button class="suggestion" data-prompt="Help me build a professional website"><strong>✦ Build something</strong><span>Website ideas and coding help</span></button>
-            <button class="suggestion" data-prompt="Give me some creative ideas"><strong>✧ Brainstorm ideas</strong><span>Find inspiration for a project</span></button>
-            <button class="suggestion" data-prompt="Explain something in simple terms"><strong>⌘ Learn something</strong><span>Understand difficult topics</span></button>
-            <button class="suggestion" data-prompt="Tell me a good joke"><strong>☻ Take a break</strong><span>Get a joke or something fun</span></button>
+            <button class="suggestion" data-prompt="Help me build a professional website"><strong>✦ Build something</strong></button>
+            <button class="suggestion" data-prompt="Give me some creative ideas"><strong>✧ Brainstorm ideas</strong></button>
+            <button class="suggestion" data-prompt="Explain something in simple terms"><strong>⌘ Learn something</strong></button>
+            <button class="suggestion" data-prompt="Tell me a good joke"><strong>☻ Take a break</strong></button>
           </div>
         </div>
       </div>
-
       <div class="typing" id="typing"><span class="typing-label">OOKWA</span><div class="typing-dots"><span></span><span></span><span></span></div></div>
-
+      <div class="history-bar"><div class="history-list" id="history-list"></div><button class="clear-history" id="clear-history">Clear</button></div>
       <div class="input-shell">
         <div class="chat-input-area">
-          <textarea id="user-input" placeholder="Message Ookwa..." rows="1"></textarea>
-          <button class="attract-btn" id="attract-btn" title="Toggle particle magnetism">⊕ Flee Cursor</button>
-          <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇 Voice</button>
+          <textarea id="user-input" placeholder="Message Ookwa... (Enter to send, Shift+Enter for new line)" rows="1"></textarea>
+          <button class="attract-btn" id="attract-btn" title="Toggle particle magnetism">⊕</button>
+          <button class="tts-btn" id="tts-btn" title="Toggle voice answers">🔇</button>
           <button class="send-btn" id="send-btn" aria-label="Send message">➤</button>
         </div>
-        <p class="input-hint">Enter to send · Shift + Enter for a new line</p>
       </div>
     </section>
-
-    <aside class="sidebar-right">
-      <div class="history-header">
-        <div class="sidebar-title">Recent messages</div>
-        <button class="clear-history" id="clear-history">Clear</button>
-      </div>
-      <div class="history-list" id="history-list"></div>
-    </aside>
   </main>
 </div>
 
@@ -386,7 +328,7 @@ const attractBtn = $('attract-btn');
 attractBtn.onclick = () => {
   window.ookwaAttract = !window.ookwaAttract;
   attractBtn.classList.toggle('on', window.ookwaAttract);
-  attractBtn.textContent = window.ookwaAttract ? '⊙ Magnetic Attract' : '⊕ Flee Cursor';
+  attractBtn.textContent = window.ookwaAttract ? '⊙' : '⊕';
 };
 
 // CHAT
@@ -394,7 +336,7 @@ const messagesEl = $('messages'), userInput = $('user-input'), typingEl = $('typ
 let ttsOn = store.get('ookwa_tts', '0') === '1', history = [];
 try { history = JSON.parse(store.get('ookwa_history', '[]')); } catch (e) {}
 
-function updateTtsBtn() { ttsBtn.classList.toggle('on', ttsOn); ttsBtn.textContent = ttsOn ? '🔊 Voice' : '🔇 Voice'; }
+function updateTtsBtn() { ttsBtn.classList.toggle('on', ttsOn); ttsBtn.textContent = ttsOn ? '🔊' : '🔇'; }
 updateTtsBtn();
 ttsBtn.onclick = () => {
   ttsOn = !ttsOn; store.set('ookwa_tts', ttsOn ? '1' : '0'); updateTtsBtn();
@@ -493,13 +435,6 @@ userInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDe
 userInput.oninput = () => { userInput.style.height = 'auto'; userInput.style.height = Math.min(userInput.scrollHeight, 120) + 'px'; };
 document.querySelectorAll('.suggestion').forEach(b => b.onclick = () => { userInput.value = b.dataset.prompt; handleSend(); });
 
-// RATINGS
-let ratings = [];
-try { ratings = JSON.parse(store.get('ookwa_ratings_list', '[]')); } catch (e) {}
-$('rating-avg').innerHTML = Array.isArray(ratings) && ratings.length
-  ? `Average: <strong>${(ratings.reduce((s, v) => s + Number(v), 0) / ratings.length).toFixed(1)}</strong>/5 (${ratings.length})`
-  : 'Be the first to rate Ookwa.';
-document.querySelectorAll('.star').forEach(s => s.onclick = () => { location.href = `rating.html?rating=${s.dataset.val}`; });
 </script>
 </body>
 </html>
