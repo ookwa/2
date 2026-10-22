@@ -441,6 +441,25 @@
       vertical-align: 2px;
     }
 
+    .rate-page-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border: 1px solid var(--border-hover);
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-grad-1), var(--accent-grad-2));
+      color: #fff;
+      text-decoration: none;
+      font-size: .75rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .rate-page-link:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
     .topbar-actions {
       display: flex;
       align-items: center;
@@ -962,7 +981,10 @@
     @media (max-width: 700px) {
       .topbar { height: 59px; padding: 0 15px; }
       .topbar-logo-mark { width: 34px; height: 34px; }
-      .topbar-right { font-size: .7rem; }
+      .topbar-right { display: none; }
+      .rate-page-link { padding: 8px 9px; font-size: .68rem; }
+      .theme-picker-wrapper { gap: 4px; padding: 4px 6px; }
+      .theme-dot { width: 13px; height: 13px; }
       .main { display: flex; flex-direction: column; margin: 8px; border-radius: 15px; }
       .sidebar-left { display: none; }
       .chat-heading { min-height: 53px; padding: 10px 15px; }
@@ -1031,6 +1053,7 @@
       </div>
 
       <div class="topbar-actions">
+        <a class="rate-page-link" href="rating.html" aria-label="Open website rating page">★ Rate website</a>
         <!-- COLOR THEME SELECTOR -->
         <div class="theme-picker-wrapper" title="Select UI Color Theme">
           <div class="theme-dot active" data-set="red" title="Red Theme"></div>
@@ -1074,6 +1097,7 @@
             </div>
             <div class="rating-feedback" id="rating-feedback"></div>
             <div class="rating-avg" id="rating-avg"></div>
+            <a class="rate-page-link" href="rating.html" style="width:100%;margin-top:12px;">Open rating page ↗</a>
           </div>
         </section>
 
@@ -1527,21 +1551,23 @@
     const stars = document.querySelectorAll('.star');
     const feedbackEl = document.getElementById('rating-feedback');
     const avgEl = document.getElementById('rating-avg');
-    let ratingsCount = 14, ratingsSum = 67;
 
     function updateRatingDisplay() {
-      const avg = (ratingsSum / ratingsCount).toFixed(1);
-      avgEl.innerHTML = `Average rating: <strong>${avg}</strong> / 5 (${ratingsCount} votes)`;
+      let ratings = [];
+      try { ratings = JSON.parse(localStorage.getItem('ookwa_ratings_list') || '[]'); } catch (e) {}
+      if (!Array.isArray(ratings) || !ratings.length) {
+        avgEl.textContent = 'Be the first to rate Ookwa.';
+        return;
+      }
+      const avg = (ratings.reduce((sum, value) => sum + Number(value), 0) / ratings.length).toFixed(1);
+      avgEl.innerHTML = `Average rating: <strong>${avg}</strong> / 5 (${ratings.length} ratings on this browser)`;
     }
     updateRatingDisplay();
 
     stars.forEach(star => {
       star.onclick = () => {
         const val = Number(star.getAttribute('data-val'));
-        stars.forEach((s, i) => s.classList.toggle('active', i < val));
-        ratingsCount++; ratingsSum += val;
-        updateRatingDisplay();
-        feedbackEl.textContent = 'Thanks for your feedback!';
+        window.location.href = `rating.html?rating=${val}`;
       };
     });
   </script>
